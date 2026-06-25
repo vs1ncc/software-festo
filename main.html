@@ -1,3 +1,5 @@
+
+Festo · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -31,7 +33,7 @@ ja:{dash:"ダッシュボード",rest:"レストラン",menu:"メニュー",ord:
 es:{dash:"Panel",rest:"Restaurantes",menu:"Menú",ord:"Pedidos",inv:"Inventario",fin:"Finanzas",staff:"Personal",anal:"Análisis",set:"Ajustes",search:"Buscar...",revToday:"Ingresos hoy",ordToday:"Pedidos",avgCheck:"Ticket medio",margin:"Margen",vsYest:"vs ayer",vsWeek:"vs semana pasada",weekRev:"Ingresos semanales",total:"Total",topDishes:"Platos populares",recentOrd:"Pedidos recientes",delivery:"Entrega","dine-in":"Sala",pickup:"Recogida",active:"Activo",preparing:"Preparando",ready:"Listo",delivered:"Entregado","on-leave":"Baja",addDish:"Añadir plato",newDish:"Nuevo plato",dishName:"Nombre",cat:"Categoría",sellP:"Precio",costP:"Coste",create:"Crear",cancel:"Cancelar",stockLbl:"Stock",hit:"TOP",isNew:"NUEVO",all:"Todo",ingr:"Ingredientes",addIngr:"Añadir",newIngr:"Nuevo ingrediente",name:"Nombre",supp:"Proveedor",costPer:"Coste",minSt:"Mín.stock",unit:"Unidad",lowAlert:"Stock crítico",income:"Ingresos",expense:"Gastos",profit:"Beneficio",cashBook:"Libro de caja",date:"Fecha",desc:"Descripción",acc:"Cuenta",addStaff:"Añadir empleado",newEmp:"Nuevo empleado",fullName:"Nombre",pos:"Cargo",hourly:"Tarifa/hora",hours:"Horas/mes",salary:"Salario",genSet:"Ajustes generales",restName:"Nombre del restaurante",lang:"Idioma",cur:"Moneda",save:"Guardar",brandStyle:"Estilo",accentC:"Color",preview:"Vista previa",online:"En línea",domain:"Dominio",applyStyle:"Aplicar",integr:"Integraciones",roles:"Roles",configure:"Configurar",connect:"Conectar",change:"Cambiar",newRest:"Nuevo restaurante",cuisine:"Cocina",subd:"Subdominio",ownD:"Dominio propio",tpl:"Plantilla",createRest:"Crear restaurante",manage:"Gestionar",monthRev:"Ingresos (junio)",monthOrd:"Pedidos del mes",topD:"Top platos",details:"Detalles",allOrds:"Todos los pedidos",stPos:"Posiciones",lowSt:"Stock bajo",suppCount:"Proveedores",stVal:"Valor",receipt:"Entrada",writeOff:"Baja",dark:"Oscuro",light:"Claro",viewMode:"Modo",autoMode:"Auto",desktopMode:"Escritorio",mobileMode:"Móvil",notif:"Notificaciones",markAll:"Marcar leídas",allNotif:"Todas"},
 fr:{dash:"Tableau de bord",rest:"Restaurants",menu:"Menu",ord:"Commandes",inv:"Inventaire",fin:"Finances",staff:"Personnel",anal:"Analytique",set:"Paramètres",search:"Rechercher...",revToday:"Recettes aujourd'hui",ordToday:"Commandes",avgCheck:"Ticket moyen",margin:"Marge",vsYest:"vs hier",vsWeek:"vs sem. dernière",weekRev:"Recettes hebdo",total:"Total",topDishes:"Plats populaires",recentOrd:"Commandes récentes",delivery:"Livraison","dine-in":"Salle",pickup:"Emporter",active:"Actif",preparing:"En cours",ready:"Prêt",delivered:"Livré","on-leave":"Congé",addDish:"Ajouter plat",newDish:"Nouveau plat",dishName:"Nom",cat:"Catégorie",sellP:"Prix",costP:"Coût",create:"Créer",cancel:"Annuler",stockLbl:"Stock",hit:"TOP",isNew:"NOUVEAU",all:"Tout",ingr:"Ingrédients",addIngr:"Ajouter",newIngr:"Nouvel ingrédient",name:"Nom",supp:"Fournisseur",costPer:"Coût",minSt:"Stock min",unit:"Unité",lowAlert:"Stock critique",income:"Recettes",expense:"Dépenses",profit:"Bénéfice",cashBook:"Livre de caisse",date:"Date",desc:"Description",acc:"Compte",addStaff:"Ajouter employé",newEmp:"Nouvel employé",fullName:"Nom complet",pos:"Poste",hourly:"Taux horaire",hours:"Heures/mois",salary:"Salaire",genSet:"Paramètres généraux",restName:"Nom du restaurant",lang:"Langue",cur:"Devise",save:"Enregistrer",brandStyle:"Style",accentC:"Couleur",preview:"Aperçu",online:"En ligne",domain:"Domaine",applyStyle:"Appliquer",integr:"Intégrations",roles:"Rôles",configure:"Configurer",connect:"Connecter",change:"Modifier",newRest:"Nouveau restaurant",cuisine:"Cuisine",subd:"Sous-domaine",ownD:"Domaine perso",tpl:"Modèle",createRest:"Créer restaurant",manage:"Gérer",monthRev:"Recettes (juin)",monthOrd:"Commandes du mois",topD:"Top plats",details:"Détails",allOrds:"Toutes les commandes",stPos:"Positions",lowSt:"Stock bas",suppCount:"Fournisseurs",stVal:"Valeur",receipt:"Entrée",writeOff:"Sortie",dark:"Sombre",light:"Clair",viewMode:"Mode d'affichage",autoMode:"Auto",desktopMode:"Bureau",mobileMode:"Mobile",notif:"Notifications",markAll:"Tout marquer lu",allNotif:"Toutes les notifs"}
 };
-
+ 
 // ── STATE ────────────────────────────────────────────────────────────────────
 let state = {
   page: 'dashboard', sidebarOpen: false, dark: true, lang: 'ru',
@@ -91,7 +93,7 @@ let state = {
   modal: null, // {type, data}
   restName: 'Sakura Garden'
 };
-
+ 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function t(key){ return (T[state.lang]||T.ru)[key] || key; }
 function fmt(n, suf=''){
@@ -122,7 +124,7 @@ function C(){
     inputBg:'#F4F4F8'
   };
 }
-
+ 
 let renderTimeout;
 function setState(updates){
   Object.assign(state, typeof updates === 'function' ? updates(state) : updates);
@@ -130,7 +132,7 @@ function setState(updates){
   renderTimeout = setTimeout(render, 10);
 }
 function render(){ document.getElementById('root').innerHTML = buildApp(); bindEvents(); }
-
+ 
 // ── SVG ICONS ────────────────────────────────────────────────────────────────
 function icon(name, size=16, color='currentColor'){
   const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"`;
@@ -184,14 +186,14 @@ function icon(name, size=16, color='currentColor'){
   };
   return icons[name] || icons.activity;
 }
-
+ 
 // ── FESTO LOGO ───────────────────────────────────────────────────────────────
 function festoLogo(size=36){
   return `<div style="width:${size}px;height:${size}px;border-radius:${Math.round(size*0.22)}px;background:linear-gradient(135deg,#7B00FF,#9B30FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px rgba(123,0,255,0.5)">
     <svg width="${size*0.78}" height="${size*0.3}" viewBox="0 0 62 18"><text x="0" y="15" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="17" fill="white" letter-spacing="2">FESTO</text></svg>
   </div>`;
 }
-
+ 
 // ── UI COMPONENTS ────────────────────────────────────────────────────────────
 function badge(status){
   const c = C();
@@ -216,7 +218,7 @@ function selectField(label, id, val, opts){
   const options = opts.map(o=>`<option value="${o.v}" ${o.v===val?'selected':''}>${o.l}</option>`).join('');
   return `<div style="margin-bottom:14px"><label style="display:block;color:${c.muted};font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">${label}</label><select id="${id}" style="width:100%;background:${c.inputBg};border:1px solid ${c.border};border-radius:10px;padding:11px 14px;color:${c.text};font-size:14px;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer">${options}</select></div>`;
 }
-
+ 
 // ── BAR CHART ────────────────────────────────────────────────────────────────
 function barChart(data){
   const c = C();
@@ -235,7 +237,7 @@ function barChart(data){
   }).join('');
   return `<div style="display:flex;align-items:flex-end;gap:6px;height:100px">${bars}</div>`;
 }
-
+ 
 // ── MINI CHART ───────────────────────────────────────────────────────────────
 function miniChart(data, color){
   const c = C(); const col = color||c.acc;
@@ -246,7 +248,7 @@ function miniChart(data, color){
   const uid='g'+Math.random().toString(36).slice(2);
   return `<svg width="${w}" height="${h}" style="overflow:visible"><defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.3"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${uid})"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
-
+ 
 function statCard(title, value, sub, trend, iconName, color, chartData){
   const c = C(); const mob = isMobile();
   const col = color||c.acc;
@@ -268,7 +270,7 @@ function statCard(title, value, sub, trend, iconName, color, chartData){
     </div>
   </div>`;
 }
-
+ 
 // ── MODAL ────────────────────────────────────────────────────────────────────
 function modal(title, body){
   const c = C();
@@ -282,7 +284,7 @@ function modal(title, body){
     </div>
   </div>`;
 }
-
+ 
 // ── NOTIFICATION PANEL ───────────────────────────────────────────────────────
 function notifPanel(){
   const c = C();
@@ -313,7 +315,7 @@ function notifPanel(){
     </div>
   </div>`;
 }
-
+ 
 // ── SIDEBAR ──────────────────────────────────────────────────────────────────
 function sidebar(){
   const c = C(); const mob = isMobile();
@@ -326,10 +328,10 @@ function sidebar(){
       ${p.id==='orders'?`<span style="margin-left:auto;background:${c.acc};color:#fff;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700">5</span>`:''}
     </button>`;
   }).join('');
-
+ 
   const langOpts = Object.entries(LANGS).map(([v,l])=>`<option value="${v}" ${v===state.lang?'selected':''}>${l}</option>`).join('');
   const curOpts = Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}" ${k===state.currency?'selected':''}>${v.s} ${k} — ${v.n}</option>`).join('');
-
+ 
   const inner = `
     <div style="display:flex;flex-direction:column;height:100%">
       <div style="padding:16px 16px 20px;display:flex;align-items:center;gap:10px">
@@ -355,14 +357,14 @@ function sidebar(){
         </div>
       </div>
     </div>`;
-
+ 
   if(mob){
     const overlay = state.sidebarOpen ? `<div id="sidebar-overlay" data-action="closeSidebar" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:900;backdrop-filter:blur(2px)"></div>` : '';
     return `${overlay}<div style="position:fixed;left:0;top:0;bottom:0;width:260px;background:${c.surf};border-right:1px solid ${c.border};z-index:1000;transform:${state.sidebarOpen?'translateX(0)':'translateX(-100%)'};transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow:auto;display:flex;flex-direction:column;box-shadow:${state.sidebarOpen?'4px 0 40px rgba(0,0,0,0.4)':'none'}">${inner}</div>`;
   }
   return `<div style="width:220px;background:${c.surf};border-right:1px solid ${c.border};display:flex;flex-direction:column;flex-shrink:0;overflow:auto">${inner}</div>`;
 }
-
+ 
 // ── TOP BAR ──────────────────────────────────────────────────────────────────
 function topBar(){
   const c = C(); const mob = isMobile();
@@ -388,7 +390,7 @@ function topBar(){
     </div>
   </div>`;
 }
-
+ 
 // ── PAGES ────────────────────────────────────────────────────────────────────
 function pageDashboard(){
   const c = C(); const mob = isMobile();
@@ -399,7 +401,7 @@ function pageDashboard(){
     statCard(t('avgCheck'),fmt(1163),t('vsYest'),3.8,'trending',c.purple,[1090,1150,1100,1180,1130,1163,1140]),
     statCard(t('margin'),'68.4%',t('vsWeek'),-2.1,'chart',c.orange,[70,72,68,71,69,68,68])
   ].join('');
-
+ 
   const recentOrds = mob ? state.orders.map(o=>`
     <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:${c.text};font-weight:700;font-size:14px">${o.id}</span>${badge(o.status)}</div>
@@ -413,7 +415,7 @@ function pageDashboard(){
       <td style="padding:11px 8px;color:${c.text};font-size:13px;font-weight:600">${fmt(o.total)}</td>
       <td style="padding:11px 8px">${badge(o.status)}</td>
     </tr>`).join('')}</table></div>`;
-
+ 
   return `<div style="padding:${pad};overflow:auto;flex:1">
     <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(4,1fr)'};gap:12px;margin-bottom:20px">${cards}</div>
     <div style="display:grid;grid-template-columns:${mob?'1fr':'2fr 1fr'};gap:14px;margin-bottom:20px">
@@ -437,7 +439,7 @@ function pageDashboard(){
     </div>
   </div>`;
 }
-
+ 
 function pageMenu(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const cats = ['all','Soups','Main','Starters','Desserts'];
@@ -474,7 +476,7 @@ function pageMenu(){
     <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(3,1fr)'};gap:12px">${items}</div>
   </div>`;
 }
-
+ 
 function pageInventory(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const lowStock = state.ingredients.filter(i=>i.stock<=i.minStock);
@@ -488,7 +490,7 @@ function pageInventory(){
     <div style="color:${s.urgent?c.acc:c.text};font-size:${mob?18:22}px;font-weight:700">${s.v}</div>
     <div style="color:${c.muted};font-size:11px;margin-top:2px">${s.l}</div>
   </div>`).join('');
-
+ 
   const rows = mob ? state.ingredients.map(item=>{
     const isLow=item.stock<=item.minStock;
     return `<div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${isLow?`rgba(${c.accRGB},0.3)`:c.border};margin-bottom:10px">
@@ -498,7 +500,7 @@ function pageInventory(){
     </div>`;
   }).join('')
   : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:560px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('name'),t('supp'),t('costPer'),t('stockLbl'),t('minSt'),''].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 14px;text-transform:uppercase;letter-spacing:0.05em">${h}</th>`).join('')}</tr></thead><tbody>${state.ingredients.map(item=>{const isLow=item.stock<=item.minStock;return`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:600">${item.name}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${item.supp}</td><td style="padding:12px 14px;color:${c.text};font-size:12px">${fmt(item.cost)}/${item.unit}</td><td style="padding:12px 14px;color:${isLow?c.acc:c.text};font-weight:${isLow?700:400};font-size:13px">${item.stock} ${item.unit}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${item.minStock} ${item.unit}</td><td style="padding:12px 14px">${btn(icon('edit',13,c.muted),'noop','ghost','sm')}</td></tr>`;}).join('')}</tbody></table></div>`;
-
+ 
   return `<div style="padding:${pad};overflow:auto;flex:1">
     ${lowStock.length>0?`<div style="background:rgba(${c.accRGB},0.08);border:1px solid rgba(${c.accRGB},0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px">${icon('warning',16,c.yellow)}<span style="color:${c.acc};font-size:12px;font-weight:600">${t('lowAlert')}: ${lowStock.map(i=>i.name).join(', ')}</span></div>`:''}
     <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(4,1fr)'};gap:12px;margin-bottom:20px">${stats}</div>
@@ -511,7 +513,7 @@ function pageInventory(){
     </div>
   </div>`;
 }
-
+ 
 function pageFinance(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const income = state.finances.filter(f=>f.type==='income').reduce((s,f)=>s+f.amount,0);
@@ -522,14 +524,14 @@ function pageFinance(){
     {l:t('expense'),v:`-${fmt(expense)}`,col:c.acc,bg:`rgba(${c.accRGB},0.06)`,bord:`rgba(${c.accRGB},0.15)`,ico:'upload'},
     {l:t('profit'),v:(profit>0?'+':'')+fmt(profit),col:profit>0?c.green:c.acc,bg:c.card,bord:c.border,ico:'trending'}
   ].map(s=>`<div style="background:${s.bg};border:1px solid ${s.bord};border-radius:14px;padding:${mob?'12px':'18px 20px'}"><div style="margin-bottom:6px">${icon(s.ico,18,s.col)}</div><div style="color:${c.muted};font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">${s.l}</div><div style="color:${s.col};font-size:${mob?14:22}px;font-weight:700">${s.v}</div></div>`).join('');
-
+ 
   const rows = mob ? state.finances.map(f=>`
     <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="color:${c.text};font-size:13px;font-weight:600;flex:1;margin-right:8px">${f.desc}</div><div style="color:${f.amount>0?c.green:c.acc};font-weight:700;font-size:14px;white-space:nowrap">${f.amount>0?'+':''}${fmt(f.amount)}</div></div>
       <div style="display:flex;gap:8px"><span style="color:${c.dim};font-size:11px">${f.date}</span><span style="background:${c.card};border-radius:5px;padding:2px 7px;font-size:10px;color:${c.muted}">${f.cat}</span></div>
     </div>`).join('')
   : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:480px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('date'),t('desc'),t('acc'),t('amount')].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 18px;text-transform:uppercase;letter-spacing:0.05em">${h}</th>`).join('')}</tr></thead><tbody>${state.finances.map(f=>`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 18px;color:${c.muted};font-size:12px">${f.date}</td><td style="padding:12px 18px;color:${c.text};font-size:13px">${f.desc}</td><td style="padding:12px 18px;color:${c.muted};font-size:12px">${f.acc}</td><td style="padding:12px 18px;color:${f.amount>0?c.green:c.acc};font-size:13px;font-weight:700">${f.amount>0?'+':''}${fmt(f.amount)}</td></tr>`).join('')}</tbody></table></div>`;
-
+ 
   return `<div style="padding:${pad};overflow:auto;flex:1">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">${summaries}</div>
     <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;overflow:hidden">
@@ -541,7 +543,7 @@ function pageFinance(){
     </div>
   </div>`;
 }
-
+ 
 function pageStaff(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const staffIcons = ['restaurants','staff','finance','plate'];
@@ -565,14 +567,14 @@ function pageStaff(){
     <div style="display:grid;grid-template-columns:${mob?'1fr':'repeat(2,1fr)'};gap:14px">${cards}</div>
   </div>`;
 }
-
+ 
 function pageOrders(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const statusCounts = [{l:'Новые',c:2,ico:'plus',col:c.yellow},{l:'Готовятся',c:1,ico:'clock',col:c.blue},{l:'Готовы',c:1,ico:'check',col:c.purple},{l:'Доставлены',c:2,ico:'truck',col:c.green}];
   const statCards = statusCounts.map(s=>`<div style="background:${c.card};border:1px solid ${c.border};border-radius:12px;padding:${mob?'10px 12px':'14px 16px'};display:flex;flex-direction:column;gap:4px">${icon(s.ico,16,s.col)}<div style="color:${c.muted};font-size:${mob?10:12}px;margin-top:2px">${s.l}</div><div style="color:${s.col};font-weight:700;font-size:${mob?18:22}px">${s.c}</div></div>`).join('');
   const typeIcon = {delivery:'truck','dine-in':'plate',pickup:'bag'};
   const typeColor = {delivery:c.blue,'dine-in':c.purple,pickup:c.orange};
-
+ 
   const rows = mob ? state.orders.map(o=>`
     <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:${c.text};font-weight:700;font-size:14px">${o.id}</span>${badge(o.status)}</div>
@@ -580,7 +582,7 @@ function pageOrders(){
       <div style="display:flex;justify-content:space-between"><span style="background:${c.card};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span><span style="color:${c.text};font-weight:700;font-size:14px">${fmt(o.total)}</span></div>
     </div>`).join('')
   : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:540px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('ord'),t('date'),t('amount'),t('payment'),t('status')].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 14px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead><tbody>${state.orders.map(o=>`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${o.id}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${o.time}</td><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${fmt(o.total)}</td><td style="padding:12px 14px"><span style="background:${c.surf};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span></td><td style="padding:12px 14px">${badge(o.status)}</td></tr>`).join('')}</tbody></table></div>`;
-
+ 
   return `<div style="padding:${pad};overflow:auto;flex:1">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">${statCards}</div>
     <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;overflow:hidden">
@@ -589,7 +591,7 @@ function pageOrders(){
     </div>
   </div>`;
 }
-
+ 
 function pageRestaurants(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const cards = state.restaurants.map(r=>`
@@ -618,7 +620,7 @@ function pageRestaurants(){
     </div>
   </div>`;
 }
-
+ 
 function pageAnalytics(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const topCards = [
@@ -645,7 +647,7 @@ function pageAnalytics(){
     </div>
   </div>`;
 }
-
+ 
 function pageSettings(){
   const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
   const langOpts = Object.entries(LANGS).map(([v,l])=>({v,l}));
@@ -654,7 +656,7 @@ function pageSettings(){
   const integrations = [{n:'POS-терминал',s:'connected',ico:'pos'},{n:'Кухонный принтер',s:'connected',ico:'printer'},{n:'Онлайн-эквайринг',s:'pending',ico:'card'},{n:'QR Pay',s:'disconnected',ico:'qr'},{n:'SMS',s:'connected',ico:'sms'},{n:'Push',s:'connected',ico:'push'}];
   const roles = [{r:'Super Admin',p:'Полный доступ',ico:'crown'},{r:'Owner',p:'Свои рестораны',ico:'building'},{r:'Restaurant Admin',p:'Меню, персонал, склад',ico:'settings'},{r:'Manager',p:'Заказы, смены, табель',ico:'orders'},{r:'Cashier',p:'Касса и заказы',ico:'finance'}];
   const viewModes = [{v:'auto',l:t('autoMode'),d:'По размеру экрана',ico:'activity'},{v:'desktop',l:t('desktopMode'),d:'Всегда десктоп',ico:'monitor'},{v:'mobile',l:t('mobileMode'),d:'Всегда мобильный',ico:'smartphone'}];
-
+ 
   return `<div style="padding:${pad};overflow:auto;flex:1">
     <div style="display:grid;grid-template-columns:${mob?'1fr':'1fr 1fr'};gap:14px">
       <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
@@ -671,7 +673,7 @@ function pageSettings(){
         </div>
         ${btn(icon('check',14,'#fff')+' '+t('save'),'saveSettings','primary','md')}
       </div>
-
+ 
       <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
         <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:18px">${t('brandStyle')}</div>
         <div style="margin-bottom:16px">
@@ -685,7 +687,7 @@ function pageSettings(){
         ${inputField(t('domain'),'domainInput','sakura.festo.io')}
         ${btn(icon('palette',14,'#fff')+' '+t('applyStyle'),'noop')}
       </div>
-
+ 
       <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'};${mob?'':'grid-column:1 / -1'}">
         <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:6px">${t('viewMode')}</div>
         <div style="color:${c.muted};font-size:12px;margin-bottom:18px">Принудительно задать макет для текущего устройства</div>
@@ -697,7 +699,7 @@ function pageSettings(){
           </button>`).join('')}
         </div>
       </div>
-
+ 
       <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
         <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('integr')}</div>
         ${integrations.map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid ${c.border}">
@@ -707,7 +709,7 @@ function pageSettings(){
           ${btn(i.s==='connected'?t('change'):t('connect'),'noop','ghost','sm')}
         </div>`).join('')}
       </div>
-
+ 
       <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
         <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('roles')}</div>
         ${roles.map(r=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid ${c.border}">
@@ -719,7 +721,7 @@ function pageSettings(){
     </div>
   </div>`;
 }
-
+ 
 // ── MODALS ───────────────────────────────────────────────────────────────────
 function buildModal(){
   if(!state.modal) return '';
@@ -750,14 +752,14 @@ function buildModal(){
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('createRest'),'addRestConfirm')}</div>`);
   return '';
 }
-
+ 
 // ── MAIN BUILD ───────────────────────────────────────────────────────────────
 function buildApp(){
   const c = C(); const mob = isMobile();
   const pages = {dashboard:pageDashboard,restaurants:pageRestaurants,menu:pageMenu,orders:pageOrders,inventory:pageInventory,finance:pageFinance,staff:pageStaff,analytics:pageAnalytics,settings:pageSettings};
   const pageContent = (pages[state.page]||pageDashboard)();
   const viewBar = state.viewMode!=='auto' ? `<div style="position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${c.acc},#8B5CF6);z-index:9999;box-shadow:0 0 10px rgba(${c.accRGB},0.5)"></div>` : '';
-
+ 
   return `
   <div style="display:flex;height:100vh;background:${c.bg};color:${c.text};overflow:hidden;position:relative">
     ${viewBar}
@@ -770,24 +772,24 @@ function buildApp(){
     ${buildModal()}
   </div>`;
 }
-
+ 
 // ── EVENTS ───────────────────────────────────────────────────────────────────
 function bindEvents(){
   document.addEventListener('click', handleClick, {once:true});
   document.addEventListener('change', handleChange);
-
+ 
   // input focus styles
   document.querySelectorAll('input,select').forEach(el=>{
     el.addEventListener('focus',()=>el.style.borderColor=state.accent);
     el.addEventListener('blur',()=>{ const c=C(); el.style.borderColor=c.border; });
   });
 }
-
+ 
 function handleClick(e){
   const el = e.target.closest('[data-action]');
   if(!el){ document.addEventListener('click',handleClick,{once:true}); return; }
   const action = el.dataset.action;
-
+ 
   if(action==='noop'){}
   else if(action.startsWith('nav-')){ setState({page:action.slice(4),sidebarOpen:false}); }
   else if(action==='openSidebar'){ setState({sidebarOpen:true}); }
@@ -842,15 +844,15 @@ function handleClick(e){
     const cuisine = document.getElementById('newRestCuisine')?.value||'';
     if(name){ setState(s=>({...s,restaurants:[...s.restaurants,{id:Date.now(),name,cuisine,orders:0,revenue:0,status:'active'}],modal:null})); }
   }
-
+ 
   document.addEventListener('click',handleClick,{once:true});
 }
-
+ 
 function handleChange(e){
   if(e.target.id==='langSelect'){ setState({lang:e.target.value}); }
   else if(e.target.id==='curSelect'){ setState({currency:e.target.value}); }
 }
-
+ 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 window.addEventListener('resize',()=>{
   clearTimeout(renderTimeout);
