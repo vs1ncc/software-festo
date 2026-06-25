@@ -430,9 +430,15 @@ const App = () => {
 };
 
 // This command tells React to find the div with id="root" and display the App inside it
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
 // This tells React to display the app inside the div with id="root"
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+    <h1>System is active!</h1>
+    <p>The React dashboard is successfully connected.</p>
+  </div>
+);
+// This block should be the only one at the end of the file
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
