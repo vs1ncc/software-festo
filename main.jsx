@@ -419,3 +419,16 @@ export default function App(){
     </div>
   </AppContext.Provider>);
 }
+// This is the component that will be rendered on your page
+const App = () => {
+  return (
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h1>System is active!</h1>
+      <p>If you see this text, React is successfully rendering.</p>
+    </div>
+  );
+};
+
+// This command tells React to find the div with id="root" and display the App inside it
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
