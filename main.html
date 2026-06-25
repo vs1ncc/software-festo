@@ -1,0 +1,865 @@
+cat > /mnt/user-data/outputs/festo.html << 'ENDOFFILE'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Festo Enterprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body,#root{height:100%;width:100%;overflow:hidden;}
+body{font-family:'Inter',-apple-system,sans-serif;background:#080810;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#2A2A40;border-radius:2px;}
+input,select,button{font-family:inherit;}
+input::placeholder{color:#4A4A6A;}
+</style>
+</head>
+<body>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#080810;color:#7B00FF;font-family:Inter,sans-serif;font-size:18px;font-weight:600;">Loading Festo...</div></div>
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const ACCENT_COLORS={purple:"#7B00FF",red:"#FF2D20",blue:"#4B7BFF",green:"#00E096",yellow:"#FFD60A",orange:"#FF6B35"};
+const CURRENCIES={RUB:{s:"₽",n:"Рубль",r:1},USD:{s:"$",n:"US Dollar",r:0.011},EUR:{s:"€",n:"Euro",r:0.010},IDR:{s:"Rp",n:"Rupiah",r:175},JPY:{s:"¥",n:"Yen",r:1.65},CNY:{s:"¥",n:"Yuan",r:0.079}};
+const LANGS={ru:"🇷🇺 Русский",en:"🇬🇧 English",zh:"🇨🇳 中文",ja:"🇯🇵 日本語",es:"🇪🇸 Español",fr:"🇫🇷 Français"};
+const T={
+ru:{dash:"Дашборд",rest:"Рестораны",menu:"Меню",ord:"Заказы",inv:"Склад",fin:"Финансы",staff:"Персонал",anal:"Аналитика",set:"Настройки",search:"Поиск...",revToday:"Выручка сегодня",ordToday:"Заказы",avgCheck:"Средний чек",margin:"Маржинальность",vsYest:"vs вчера",vsWeek:"vs прошлой нед.",weekRev:"Выручка за неделю",total:"Общая",topDishes:"Популярные блюда",recentOrd:"Последние заказы",delivery:"Доставка","dine-in":"Зал",pickup:"Самовывоз",active:"Активен",preparing:"Готовится",ready:"Готов",delivered:"Доставлен","on-leave":"Отпуск",addDish:"Добавить блюдо",newDish:"Новое блюдо",dishName:"Название",cat:"Категория",sellP:"Цена продажи",costP:"Себестоимость",create:"Создать",cancel:"Отмена",stockLbl:"Остаток",hit:"ХИТ",isNew:"NEW",all:"Все",ingr:"Ингредиенты",addIngr:"Добавить",newIngr:"Новый ингредиент",name:"Наименование",supp:"Поставщик",costPer:"Себест.",minSt:"Мин.остаток",unit:"Ед.изм",lowAlert:"Критически мало запасов",income:"Доходы",expense:"Расходы",profit:"Прибыль",cashBook:"Кассовая книга",date:"Дата",desc:"Описание",acc:"Счёт",addStaff:"Добавить сотрудника",newEmp:"Новый сотрудник",fullName:"ФИО",pos:"Должность",hourly:"Почасовая ставка",hours:"Часы / мес",salary:"Зарплата",genSet:"Основные настройки",restName:"Название ресторана",lang:"Язык",cur:"Валюта",save:"Сохранить",brandStyle:"Фирменный стиль",accentC:"Акцентный цвет",preview:"Предпросмотр",online:"Онлайн",domain:"Домен",applyStyle:"Применить",integr:"Интеграции",roles:"Роли и доступ",configure:"Настроить",connect:"Подключить",change:"Изменить",newRest:"Новый ресторан",cuisine:"Кухня",subd:"Поддомен",ownD:"Свой домен",tpl:"Шаблон",createRest:"Создать ресторан",manage:"Управлять",monthRev:"Выручка (июнь)",monthOrd:"Заказов за месяц",topD:"Топ блюд",details:"Детали",allOrds:"Все заказы",stPos:"Позиций",lowSt:"Низкий остаток",suppCount:"Поставщиков",stVal:"Стоимость",receipt:"Поступление",writeOff:"Списание",dark:"Тёмная",light:"Светлая",viewMode:"Режим отображения",autoMode:"Авто",desktopMode:"ПК версия",mobileMode:"Мобильная",notif:"Уведомления",markAll:"Прочитать все",allNotif:"Все уведомления"},
+en:{dash:"Dashboard",rest:"Restaurants",menu:"Menu",ord:"Orders",inv:"Inventory",fin:"Finance",staff:"Staff",anal:"Analytics",set:"Settings",search:"Search...",revToday:"Revenue today",ordToday:"Orders",avgCheck:"Avg. check",margin:"Margin",vsYest:"vs yesterday",vsWeek:"vs last week",weekRev:"Weekly Revenue",total:"Total",topDishes:"Top dishes",recentOrd:"Recent Orders",delivery:"Delivery","dine-in":"Dine-in",pickup:"Pickup",active:"Active",preparing:"Preparing",ready:"Ready",delivered:"Delivered","on-leave":"On leave",addDish:"Add dish",newDish:"New Dish",dishName:"Name",cat:"Category",sellP:"Sell price",costP:"Cost price",create:"Create",cancel:"Cancel",stockLbl:"Stock",hit:"HIT",isNew:"NEW",all:"All",ingr:"Ingredients",addIngr:"Add",newIngr:"New Ingredient",name:"Name",supp:"Supplier",costPer:"Cost",minSt:"Min stock",unit:"Unit",lowAlert:"Low stock critical",income:"Income",expense:"Expenses",profit:"Profit",cashBook:"Cash Book",date:"Date",desc:"Description",acc:"Account",addStaff:"Add staff",newEmp:"New Employee",fullName:"Full name",pos:"Position",hourly:"Hourly rate",hours:"Hours / mo",salary:"Salary",genSet:"General Settings",restName:"Restaurant name",lang:"Language",cur:"Currency",save:"Save",brandStyle:"Brand Style",accentC:"Accent color",preview:"Preview",online:"Online",domain:"Domain",applyStyle:"Apply",integr:"Integrations",roles:"Roles & Access",configure:"Configure",connect:"Connect",change:"Change",newRest:"New Restaurant",cuisine:"Cuisine",subd:"Subdomain",ownD:"Custom domain",tpl:"Template",createRest:"Create restaurant",manage:"Manage",monthRev:"Revenue (June)",monthOrd:"Orders this month",topD:"Top dishes",details:"Details",allOrds:"All orders",stPos:"Positions",lowSt:"Low stock",suppCount:"Suppliers",stVal:"Stock value",receipt:"Receipt",writeOff:"Write-off",dark:"Dark",light:"Light",viewMode:"Display Mode",autoMode:"Auto",desktopMode:"Desktop",mobileMode:"Mobile",notif:"Notifications",markAll:"Mark all read",allNotif:"All notifications"},
+zh:{dash:"仪表板",rest:"餐厅",menu:"菜单",ord:"订单",inv:"库存",fin:"财务",staff:"员工",anal:"分析",set:"设置",search:"搜索...",revToday:"今日营收",ordToday:"订单数",avgCheck:"平均客单价",margin:"毛利率",vsYest:"vs 昨日",vsWeek:"vs 上周",weekRev:"周营收",total:"合计",topDishes:"热门菜品",recentOrd:"最近订单",delivery:"外卖","dine-in":"堂食",pickup:"自取",active:"活跃",preparing:"准备中",ready:"已准备",delivered:"已送达","on-leave":"请假",addDish:"添加菜品",newDish:"新菜品",dishName:"名称",cat:"分类",sellP:"售价",costP:"成本",create:"创建",cancel:"取消",stockLbl:"库存",hit:"热销",isNew:"新品",all:"全部",ingr:"食材",addIngr:"添加",newIngr:"新食材",name:"名称",supp:"供应商",costPer:"成本",minSt:"最低库存",unit:"单位",lowAlert:"库存不足",income:"收入",expense:"支出",profit:"利润",cashBook:"现金账本",date:"日期",desc:"描述",acc:"账户",addStaff:"添加员工",newEmp:"新员工",fullName:"姓名",pos:"职位",hourly:"时薪",hours:"本月工时",salary:"工资",genSet:"基本设置",restName:"餐厅名称",lang:"语言",cur:"货币",save:"保存",brandStyle:"品牌样式",accentC:"主题色",preview:"预览",online:"在线",domain:"域名",applyStyle:"应用",integr:"集成",roles:"角色权限",configure:"配置",connect:"连接",change:"更改",newRest:"新餐厅",cuisine:"菜系",subd:"子域名",ownD:"自定义域名",tpl:"模板",createRest:"创建餐厅",manage:"管理",monthRev:"营收（六月）",monthOrd:"本月订单",topD:"热门菜品",details:"详情",allOrds:"全部订单",stPos:"库存项目",lowSt:"低库存",suppCount:"供应商",stVal:"库存价值",receipt:"入库",writeOff:"核销",dark:"深色",light:"浅色",viewMode:"显示模式",autoMode:"自动",desktopMode:"桌面版",mobileMode:"移动版",notif:"通知",markAll:"全部已读",allNotif:"全部通知"},
+ja:{dash:"ダッシュボード",rest:"レストラン",menu:"メニュー",ord:"注文",inv:"在庫",fin:"財務",staff:"スタッフ",anal:"分析",set:"設定",search:"検索...",revToday:"本日の売上",ordToday:"注文数",avgCheck:"平均客単価",margin:"利益率",vsYest:"vs 昨日",vsWeek:"vs 先週",weekRev:"週間売上",total:"合計",topDishes:"人気料理",recentOrd:"最近の注文",delivery:"デリバリー","dine-in":"店内",pickup:"テイクアウト",active:"アクティブ",preparing:"準備中",ready:"準備完了",delivered:"配達済","on-leave":"休暇",addDish:"料理追加",newDish:"新しい料理",dishName:"名前",cat:"カテゴリ",sellP:"販売価格",costP:"原価",create:"作成",cancel:"キャンセル",stockLbl:"在庫",hit:"ヒット",isNew:"新着",all:"すべて",ingr:"食材",addIngr:"追加",newIngr:"新しい食材",name:"名前",supp:"サプライヤー",costPer:"原価",minSt:"最低在庫",unit:"単位",lowAlert:"在庫不足",income:"収入",expense:"支出",profit:"利益",cashBook:"現金出納帳",date:"日付",desc:"説明",acc:"口座",addStaff:"スタッフ追加",newEmp:"新しいスタッフ",fullName:"氏名",pos:"役職",hourly:"時給",hours:"今月の時間",salary:"給料",genSet:"基本設定",restName:"レストラン名",lang:"言語",cur:"通貨",save:"保存",brandStyle:"ブランド",accentC:"カラー",preview:"プレビュー",online:"オンライン",domain:"ドメイン",applyStyle:"適用",integr:"連携",roles:"役割",configure:"設定",connect:"接続",change:"変更",newRest:"新しいレストラン",cuisine:"料理",subd:"サブドメイン",ownD:"カスタム",tpl:"テンプレート",createRest:"作成",manage:"管理",monthRev:"売上（6月）",monthOrd:"今月の注文",topD:"人気料理",details:"詳細",allOrds:"すべての注文",stPos:"在庫品目",lowSt:"低在庫",suppCount:"サプライヤー",stVal:"在庫価値",receipt:"入庫",writeOff:"廃棄",dark:"ダーク",light:"ライト",viewMode:"表示モード",autoMode:"自動",desktopMode:"デスクトップ",mobileMode:"モバイル",notif:"通知",markAll:"既読にする",allNotif:"すべての通知"},
+es:{dash:"Panel",rest:"Restaurantes",menu:"Menú",ord:"Pedidos",inv:"Inventario",fin:"Finanzas",staff:"Personal",anal:"Análisis",set:"Ajustes",search:"Buscar...",revToday:"Ingresos hoy",ordToday:"Pedidos",avgCheck:"Ticket medio",margin:"Margen",vsYest:"vs ayer",vsWeek:"vs semana pasada",weekRev:"Ingresos semanales",total:"Total",topDishes:"Platos populares",recentOrd:"Pedidos recientes",delivery:"Entrega","dine-in":"Sala",pickup:"Recogida",active:"Activo",preparing:"Preparando",ready:"Listo",delivered:"Entregado","on-leave":"Baja",addDish:"Añadir plato",newDish:"Nuevo plato",dishName:"Nombre",cat:"Categoría",sellP:"Precio",costP:"Coste",create:"Crear",cancel:"Cancelar",stockLbl:"Stock",hit:"TOP",isNew:"NUEVO",all:"Todo",ingr:"Ingredientes",addIngr:"Añadir",newIngr:"Nuevo ingrediente",name:"Nombre",supp:"Proveedor",costPer:"Coste",minSt:"Mín.stock",unit:"Unidad",lowAlert:"Stock crítico",income:"Ingresos",expense:"Gastos",profit:"Beneficio",cashBook:"Libro de caja",date:"Fecha",desc:"Descripción",acc:"Cuenta",addStaff:"Añadir empleado",newEmp:"Nuevo empleado",fullName:"Nombre",pos:"Cargo",hourly:"Tarifa/hora",hours:"Horas/mes",salary:"Salario",genSet:"Ajustes generales",restName:"Nombre del restaurante",lang:"Idioma",cur:"Moneda",save:"Guardar",brandStyle:"Estilo",accentC:"Color",preview:"Vista previa",online:"En línea",domain:"Dominio",applyStyle:"Aplicar",integr:"Integraciones",roles:"Roles",configure:"Configurar",connect:"Conectar",change:"Cambiar",newRest:"Nuevo restaurante",cuisine:"Cocina",subd:"Subdominio",ownD:"Dominio propio",tpl:"Plantilla",createRest:"Crear restaurante",manage:"Gestionar",monthRev:"Ingresos (junio)",monthOrd:"Pedidos del mes",topD:"Top platos",details:"Detalles",allOrds:"Todos los pedidos",stPos:"Posiciones",lowSt:"Stock bajo",suppCount:"Proveedores",stVal:"Valor",receipt:"Entrada",writeOff:"Baja",dark:"Oscuro",light:"Claro",viewMode:"Modo",autoMode:"Auto",desktopMode:"Escritorio",mobileMode:"Móvil",notif:"Notificaciones",markAll:"Marcar leídas",allNotif:"Todas"},
+fr:{dash:"Tableau de bord",rest:"Restaurants",menu:"Menu",ord:"Commandes",inv:"Inventaire",fin:"Finances",staff:"Personnel",anal:"Analytique",set:"Paramètres",search:"Rechercher...",revToday:"Recettes aujourd'hui",ordToday:"Commandes",avgCheck:"Ticket moyen",margin:"Marge",vsYest:"vs hier",vsWeek:"vs sem. dernière",weekRev:"Recettes hebdo",total:"Total",topDishes:"Plats populaires",recentOrd:"Commandes récentes",delivery:"Livraison","dine-in":"Salle",pickup:"Emporter",active:"Actif",preparing:"En cours",ready:"Prêt",delivered:"Livré","on-leave":"Congé",addDish:"Ajouter plat",newDish:"Nouveau plat",dishName:"Nom",cat:"Catégorie",sellP:"Prix",costP:"Coût",create:"Créer",cancel:"Annuler",stockLbl:"Stock",hit:"TOP",isNew:"NOUVEAU",all:"Tout",ingr:"Ingrédients",addIngr:"Ajouter",newIngr:"Nouvel ingrédient",name:"Nom",supp:"Fournisseur",costPer:"Coût",minSt:"Stock min",unit:"Unité",lowAlert:"Stock critique",income:"Recettes",expense:"Dépenses",profit:"Bénéfice",cashBook:"Livre de caisse",date:"Date",desc:"Description",acc:"Compte",addStaff:"Ajouter employé",newEmp:"Nouvel employé",fullName:"Nom complet",pos:"Poste",hourly:"Taux horaire",hours:"Heures/mois",salary:"Salaire",genSet:"Paramètres généraux",restName:"Nom du restaurant",lang:"Langue",cur:"Devise",save:"Enregistrer",brandStyle:"Style",accentC:"Couleur",preview:"Aperçu",online:"En ligne",domain:"Domaine",applyStyle:"Appliquer",integr:"Intégrations",roles:"Rôles",configure:"Configurer",connect:"Connecter",change:"Modifier",newRest:"Nouveau restaurant",cuisine:"Cuisine",subd:"Sous-domaine",ownD:"Domaine perso",tpl:"Modèle",createRest:"Créer restaurant",manage:"Gérer",monthRev:"Recettes (juin)",monthOrd:"Commandes du mois",topD:"Top plats",details:"Détails",allOrds:"Toutes les commandes",stPos:"Positions",lowSt:"Stock bas",suppCount:"Fournisseurs",stVal:"Valeur",receipt:"Entrée",writeOff:"Sortie",dark:"Sombre",light:"Clair",viewMode:"Mode d'affichage",autoMode:"Auto",desktopMode:"Bureau",mobileMode:"Mobile",notif:"Notifications",markAll:"Tout marquer lu",allNotif:"Toutes les notifs"}
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let state = {
+  page: 'dashboard', sidebarOpen: false, dark: true, lang: 'ru',
+  currency: 'RUB', accent: '#7B00FF', viewMode: 'auto',
+  notifOpen: false,
+  notifs: [
+    {id:1,type:'warning',title:'Низкий остаток',msg:'Лемонграсс: 3.2 кг (мин. 5 кг)',time:'2 мин назад',read:false},
+    {id:2,type:'success',title:'Заказ #4521 принят',msg:'Доставка · 4 позиции · ₽3 840',time:'5 мин назад',read:false},
+    {id:3,type:'info',title:'Выручка за день',msg:'₽94 200 — рост +12%',time:'1 ч назад',read:false},
+    {id:4,type:'success',title:'Сотрудник добавлен',msg:'Алексей Романов · Шеф-повар',time:'3 ч назад',read:true},
+    {id:5,type:'info',title:'Отчёт готов',msg:'Еженедельный отчёт сформирован',time:'5 ч назад',read:true},
+    {id:6,type:'warning',title:'Подписка истекает',msg:'Enterprise · осталось 7 дней',time:'1 д назад',read:true}
+  ],
+  menuItems: [
+    {id:1,name:'Tom Yum Soup',cat:'Soups',price:890,cost:234,stock:45,hit:true,isNew:false},
+    {id:2,name:'Pad Thai Classic',cat:'Main',price:1200,cost:380,stock:32,hit:false,isNew:true},
+    {id:3,name:'Green Curry',cat:'Main',price:1100,cost:310,stock:28,hit:true,isNew:false},
+    {id:4,name:'Mango Sticky Rice',cat:'Desserts',price:650,cost:145,stock:60,hit:false,isNew:true},
+    {id:5,name:'Pho Bo',cat:'Soups',price:980,cost:267,stock:22,hit:true,isNew:false},
+    {id:6,name:'Spring Rolls',cat:'Starters',price:590,cost:120,stock:80,hit:false,isNew:false}
+  ],
+  ingredients: [
+    {id:1,name:'Креветки тигровые',cat:'Морепродукты',cost:1800,stock:12.4,minStock:5,unit:'кг',supp:'OceanFresh'},
+    {id:2,name:'Кокосовое молоко',cat:'Молочные',cost:320,stock:48,minStock:20,unit:'л',supp:'TropicGoods'},
+    {id:3,name:'Рис жасминовый',cat:'Крупы',cost:180,stock:85,minStock:30,unit:'кг',supp:'GrainMaster'},
+    {id:4,name:'Лемонграсс',cat:'Специи',cost:450,stock:3.2,minStock:5,unit:'кг',supp:'SpiceWorld'},
+    {id:5,name:'Говядина вырезка',cat:'Мясо',cost:2200,stock:18,minStock:10,unit:'кг',supp:'FarmPrime'},
+    {id:6,name:'Тофу шёлковый',cat:'Соя',cost:380,stock:25,minStock:15,unit:'кг',supp:'TofuCraft'}
+  ],
+  staffList: [
+    {id:1,name:'Алексей Романов',role:'Шеф-повар',rate:850,hours:168,status:'active'},
+    {id:2,name:'Мария Соколова',role:'Менеджер зала',rate:620,hours:152,status:'active'},
+    {id:3,name:'Дмитрий Петров',role:'Бариста',rate:480,hours:144,status:'active'},
+    {id:4,name:'Анна Козлова',role:'Официант',rate:420,hours:160,status:'on-leave'}
+  ],
+  restaurants: [
+    {id:1,name:'Sakura Garden',cuisine:'Japanese',orders:1248,revenue:342800,status:'active'},
+    {id:2,name:'La Bella Italia',cuisine:'Italian',orders:987,revenue:278400,status:'active'},
+    {id:3,name:'Spice Route',cuisine:'Indian',orders:756,revenue:198600,status:'active'}
+  ],
+  orders: [
+    {id:'#4521',time:'14:32',type:'delivery',items:4,total:3840,status:'preparing',payment:'card'},
+    {id:'#4520',time:'14:28',type:'dine-in',items:6,total:5290,status:'ready',payment:'cash'},
+    {id:'#4519',time:'14:21',type:'pickup',items:2,total:1780,status:'delivered',payment:'qr'},
+    {id:'#4518',time:'14:15',type:'delivery',items:3,total:2650,status:'delivered',payment:'online'},
+    {id:'#4517',time:'14:08',type:'dine-in',items:8,total:7120,status:'delivered',payment:'card'}
+  ],
+  finances: [
+    {id:1,type:'income',desc:'Выручка от продаж',amount:94200,date:'2026-06-23',cat:'Продажи',acc:'Касса'},
+    {id:2,type:'expense',desc:'Закупка продуктов',amount:-28400,date:'2026-06-23',cat:'Продукты',acc:'Р/С'},
+    {id:3,type:'income',desc:'Онлайн-заказы',amount:31600,date:'2026-06-22',cat:'Онлайн',acc:'Эквайринг'},
+    {id:4,type:'expense',desc:'Зарплата персонала',amount:-52800,date:'2026-06-22',cat:'Персонал',acc:'Р/С'},
+    {id:5,type:'expense',desc:'Аренда помещения',amount:-85000,date:'2026-06-21',cat:'Аренда',acc:'Р/С'}
+  ],
+  revenueData:[{d:'Пн',v:45200},{d:'Вт',v:52800},{d:'Ср',v:48100},{d:'Чт',v:61400},{d:'Пт',v:78900},{d:'Сб',v:94200},{d:'Вс',v:87600}],
+  menuFilter: 'all',
+  modal: null, // {type, data}
+  restName: 'Sakura Garden'
+};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function t(key){ return (T[state.lang]||T.ru)[key] || key; }
+function fmt(n, suf=''){
+  const cur = CURRENCIES[state.currency]||CURRENCIES.RUB;
+  const val = Math.round(+n * cur.r);
+  return cur.s + val.toLocaleString() + suf;
+}
+function isMobile(){
+  if(state.viewMode==='mobile') return true;
+  if(state.viewMode==='desktop') return false;
+  return window.innerWidth < 768;
+}
+function C(){
+  const a = state.accent;
+  const rgb = {'#7B00FF':'123,0,255','#FF2D20':'255,45,32','#4B7BFF':'75,123,255','#00E096':'0,224,150','#FFD60A':'255,214,10','#FF6B35':'255,107,53'}[a]||'123,0,255';
+  if(state.dark) return {
+    bg:'#080810',surf:'#0F0F1A',card:'#13131F',border:'#1E1E30',borderL:'#2A2A40',
+    acc:a,accRGB:rgb,accGlow:`rgba(${rgb},0.15)`,
+    text:'#E8E8F4',muted:'#7070A0',dim:'#4A4A6A',
+    green:'#00E096',blue:'#4B7BFF',purple:'#8B5CF6',yellow:'#FFD60A',orange:'#FF6B35',red:'#FF4444',
+    inputBg:'#0F0F1A'
+  };
+  return {
+    bg:'#F4F4F8',surf:'#FFFFFF',card:'#FFFFFF',border:'#E0E0EC',borderL:'#C8C8DC',
+    acc:a,accRGB:rgb,accGlow:`rgba(${rgb},0.12)`,
+    text:'#111118',muted:'#6060A0',dim:'#A0A0C0',
+    green:'#00B87A',blue:'#3A6AEF',purple:'#7C4CE0',yellow:'#C8A000',orange:'#E05500',red:'#CC2222',
+    inputBg:'#F4F4F8'
+  };
+}
+
+let renderTimeout;
+function setState(updates){
+  Object.assign(state, typeof updates === 'function' ? updates(state) : updates);
+  clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(render, 10);
+}
+function render(){ document.getElementById('root').innerHTML = buildApp(); bindEvents(); }
+
+// ── SVG ICONS ────────────────────────────────────────────────────────────────
+function icon(name, size=16, color='currentColor'){
+  const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"`;
+  const icons = {
+    dashboard:`<svg ${s}><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    restaurants:`<svg ${s}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6h3.5"/><path d="M16 13v9"/></svg>`,
+    menu:`<svg ${s}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+    orders:`<svg ${s}><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>`,
+    inventory:`<svg ${s}><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>`,
+    finance:`<svg ${s}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+    staff:`<svg ${s}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    analytics:`<svg ${s}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    settings:`<svg ${s}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    bell:`<svg ${s}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+    sun:`<svg ${s}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+    moon:`<svg ${s}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+    search:`<svg ${s}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    plus:`<svg ${s}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    edit:`<svg ${s}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+    trash:`<svg ${s}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+    close:`<svg ${s}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    user:`<svg ${s}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    globe:`<svg ${s}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    trending:`<svg ${s}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+    chart:`<svg ${s}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+    receipt:`<svg ${s}><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>`,
+    dollar:`<svg ${s}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+    truck:`<svg ${s}><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+    warning:`<svg ${s}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    check:`<svg ${s}><polyline points="20 6 9 17 4 12"/></svg>`,
+    download:`<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+    upload:`<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
+    star:`<svg ${s}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    fire:`<svg ${s}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`,
+    clock:`<svg ${s}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    card:`<svg ${s}><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+    bag:`<svg ${s}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+    plate:`<svg ${s}><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
+    crown:`<svg ${s}><path d="M2 20h20M5 20l2-10 5 5 5-8 2 13"/></svg>`,
+    building:`<svg ${s}><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>`,
+    printer:`<svg ${s}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>`,
+    qr:`<svg ${s}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="18" x2="18" y2="18"/></svg>`,
+    sms:`<svg ${s}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    push:`<svg ${s}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="12" y1="2" x2="12" y2="4"/></svg>`,
+    pos:`<svg ${s}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    palette:`<svg ${s}><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>`,
+    activity:`<svg ${s}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    monitor:`<svg ${s}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    smartphone:`<svg ${s}><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+    arrowRight:`<svg ${s}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`
+  };
+  return icons[name] || icons.activity;
+}
+
+// ── FESTO LOGO ───────────────────────────────────────────────────────────────
+function festoLogo(size=36){
+  return `<div style="width:${size}px;height:${size}px;border-radius:${Math.round(size*0.22)}px;background:linear-gradient(135deg,#7B00FF,#9B30FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px rgba(123,0,255,0.5)">
+    <svg width="${size*0.78}" height="${size*0.3}" viewBox="0 0 62 18"><text x="0" y="15" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="17" fill="white" letter-spacing="2">FESTO</text></svg>
+  </div>`;
+}
+
+// ── UI COMPONENTS ────────────────────────────────────────────────────────────
+function badge(status){
+  const c = C();
+  const map = {active:{col:c.green,bg:'rgba(0,224,150,0.1)',lbl:t('active')},preparing:{col:c.yellow,bg:'rgba(255,214,10,0.1)',lbl:t('preparing')},ready:{col:c.blue,bg:'rgba(75,123,255,0.1)',lbl:t('ready')},delivered:{col:c.green,bg:'rgba(0,224,150,0.1)',lbl:t('delivered')},'on-leave':{col:c.muted,bg:'rgba(112,112,160,0.1)',lbl:t('on-leave')}};
+  const s = map[status]||{col:c.muted,bg:'rgba(112,112,160,0.1)',lbl:status};
+  return `<span style="background:${s.bg};color:${s.col};border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;white-space:nowrap">${s.lbl}</span>`;
+}
+function btn(label, action, variant='primary', sz='md'){
+  const c = C();
+  const bg = variant==='primary' ? `linear-gradient(135deg,${c.acc},${c.acc}CC)` : variant==='ghost' ? c.surf : 'transparent';
+  const col = variant==='primary' ? '#fff' : c.text;
+  const bord = variant==='secondary' ? `1px solid ${c.border}` : variant==='ghost' ? `1px solid ${c.border}` : 'none';
+  const pad = sz==='sm' ? '6px 11px' : sz==='lg' ? '12px 22px' : '9px 15px';
+  return `<button data-action="${action}" style="background:${bg};color:${col};border:${bord};border-radius:10px;padding:${pad};font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-family:inherit;transition:all 0.15s">${label}</button>`;
+}
+function inputField(label, id, val='', type='text', ph=''){
+  const c = C();
+  return `<div style="margin-bottom:14px"><label style="display:block;color:${c.muted};font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">${label}</label><input id="${id}" type="${type}" value="${val}" placeholder="${ph}" style="width:100%;background:${c.inputBg};border:1px solid ${c.border};border-radius:10px;padding:11px 14px;color:${c.text};font-size:14px;outline:none;box-sizing:border-box;font-family:inherit"/></div>`;
+}
+function selectField(label, id, val, opts){
+  const c = C();
+  const options = opts.map(o=>`<option value="${o.v}" ${o.v===val?'selected':''}>${o.l}</option>`).join('');
+  return `<div style="margin-bottom:14px"><label style="display:block;color:${c.muted};font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">${label}</label><select id="${id}" style="width:100%;background:${c.inputBg};border:1px solid ${c.border};border-radius:10px;padding:11px 14px;color:${c.text};font-size:14px;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer">${options}</select></div>`;
+}
+
+// ── BAR CHART ────────────────────────────────────────────────────────────────
+function barChart(data){
+  const c = C();
+  const max = Math.max(...data.map(d=>d.v));
+  const bars = data.map((d,i)=>{
+    const pct = (d.v/max)*100;
+    const isLast = i===data.length-1;
+    const bg = isLast ? `linear-gradient(180deg,${c.acc},${c.acc}CC)` : `linear-gradient(180deg,${c.border}90,${c.border}40)`;
+    const shadow = isLast ? `box-shadow:0 0 10px rgba(${c.accRGB},0.3)` : '';
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div style="width:100%;height:84px;display:flex;align-items:flex-end">
+        <div style="width:100%;height:${pct}%;background:${bg};border-radius:4px 4px 0 0;${shadow}"></div>
+      </div>
+      <span style="font-size:9px;color:${c.dim}">${d.d}</span>
+    </div>`;
+  }).join('');
+  return `<div style="display:flex;align-items:flex-end;gap:6px;height:100px">${bars}</div>`;
+}
+
+// ── MINI CHART ───────────────────────────────────────────────────────────────
+function miniChart(data, color){
+  const c = C(); const col = color||c.acc;
+  const max=Math.max(...data),min=Math.min(...data),range=max-min||1;
+  const w=120,h=40;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${h-((v-min)/range)*(h-6)-3}`).join(' ');
+  const area=`${pts} ${w},${h} 0,${h}`;
+  const uid='g'+Math.random().toString(36).slice(2);
+  return `<svg width="${w}" height="${h}" style="overflow:visible"><defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.3"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${uid})"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+function statCard(title, value, sub, trend, iconName, color, chartData){
+  const c = C(); const mob = isMobile();
+  const col = color||c.acc;
+  const trendCol = trend>0 ? c.green : '#FF6B6B';
+  return `<div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'14px 16px':'18px 20px'}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <div style="font-size:10px;color:${c.muted};margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">${title}</div>
+        <div style="font-size:${mob?20:26}px;font-weight:700;color:${c.text};letter-spacing:-0.02em">${value}</div>
+      </div>
+      <div style="background:rgba(${c.accRGB},0.1);border-radius:10px;padding:8px;flex-shrink:0">${icon(iconName,18,col)}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:4px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:5px">
+        <span style="color:${trendCol};font-size:12px;font-weight:600">${trend>0?'↑':'↓'} ${Math.abs(trend)}%</span>
+        <span style="color:${c.dim};font-size:11px">${sub}</span>
+      </div>
+      ${!mob && chartData ? miniChart(chartData,col) : ''}
+    </div>
+  </div>`;
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function modal(title, body){
+  const c = C();
+  return `<div id="modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)">
+    <div id="modal-box" style="background:${c.card};border:1px solid ${c.border};border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:640px;max-height:90vh;overflow:auto;box-sizing:border-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 style="color:${c.text};font-size:17px;font-weight:700;margin:0">${title}</h3>
+        <button data-action="closeModal" style="background:${c.surf};border:1px solid ${c.border};color:${c.muted};cursor:pointer;border-radius:8px;padding:6px 8px;display:flex;align-items:center">${icon('close',16,c.muted)}</button>
+      </div>
+      ${body}
+    </div>
+  </div>`;
+}
+
+// ── NOTIFICATION PANEL ───────────────────────────────────────────────────────
+function notifPanel(){
+  const c = C();
+  const unread = state.notifs.filter(n=>!n.read).length;
+  const typeColor = {warning:c.yellow,success:c.green,info:c.blue};
+  const typeBg = {warning:'rgba(255,214,10,0.1)',success:'rgba(0,224,150,0.1)',info:'rgba(75,123,255,0.1)'};
+  const items = state.notifs.map(n=>`
+    <div style="padding:11px 16px;border-bottom:1px solid rgba(${state.dark?'255,255,255':'0,0,0'},0.05);display:flex;gap:11px;align-items:flex-start;background:${!n.read?(state.dark?'rgba(255,255,255,0.025)':'rgba(0,0,0,0.018)'):'transparent'}">
+      <div style="width:32px;height:32px;border-radius:9px;background:${typeBg[n.type]||typeBg.info};display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon(n.type==='warning'?'warning':n.type==='success'?'check':'dollar',15,typeColor[n.type]||c.blue)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:2px">
+          <span style="color:${c.text};font-size:12px;font-weight:${n.read?400:600};line-height:1.3">${n.title}</span>
+          ${!n.read?`<div style="width:6px;height:6px;border-radius:50%;background:${c.acc};flex-shrink:0;margin-top:3px"></div>`:''}
+        </div>
+        <div style="color:${c.muted};font-size:11px;margin-bottom:3px;line-height:1.4">${n.msg}</div>
+        <div style="display:flex;align-items:center;gap:3px">${icon('clock',10,c.dim)}<span style="color:${c.dim};font-size:10px">${n.time}</span></div>
+      </div>
+    </div>`).join('');
+  return `<div id="notif-overlay" style="position:fixed;inset:0;z-index:1500" data-action="closeNotif"></div>
+  <div style="position:fixed;top:58px;right:14px;width:330px;max-width:calc(100vw - 28px);background:${state.dark?'rgba(13,13,26,0.92)':'rgba(255,255,255,0.92)'};backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(${state.dark?'255,255,255':'0,0,0'},0.09);border-radius:18px;box-shadow:${state.dark?'0 24px 60px rgba(0,0,0,0.65)':'0 24px 60px rgba(0,0,0,0.15)'};z-index:1501;overflow:hidden">
+    <div style="padding:14px 16px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(${state.dark?'255,255,255':'0,0,0'},0.07)">
+      <div style="display:flex;align-items:center;gap:8px">${icon('bell',15,c.text)}<span style="color:${c.text};font-size:14px;font-weight:700">${t('notif')}</span><span style="background:rgba(${c.accRGB},0.15);color:${c.acc};border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700">${unread}</span></div>
+      <button data-action="markAllRead" style="background:none;border:none;color:${c.muted};cursor:pointer;font-size:12px;font-family:inherit;padding:4px 8px;border-radius:6px">${t('markAll')}</button>
+    </div>
+    <div style="max-height:360px;overflow:auto">${items}</div>
+    <div style="padding:10px 16px;border-top:1px solid rgba(${state.dark?'255,255,255':'0,0,0'},0.07);text-align:center">
+      <button data-action="closeNotif" style="background:none;border:none;color:${c.muted};cursor:pointer;font-size:12px;font-family:inherit;display:inline-flex;align-items:center;gap:4px">${t('allNotif')} ${icon('arrowRight',11,c.muted)}</button>
+    </div>
+  </div>`;
+}
+
+// ── SIDEBAR ──────────────────────────────────────────────────────────────────
+function sidebar(){
+  const c = C(); const mob = isMobile();
+  const pages = [{id:'dashboard',ico:'dashboard'},{id:'restaurants',ico:'restaurants'},{id:'menu',ico:'menu'},{id:'orders',ico:'orders'},{id:'inventory',ico:'inventory'},{id:'finance',ico:'finance'},{id:'staff',ico:'staff'},{id:'analytics',ico:'analytics'},{id:'settings',ico:'settings'}];
+  const nav = pages.map(p=>{
+    const active = state.page===p.id;
+    return `<button data-action="nav-${p.id}" style="background:${active?c.accGlow:'transparent'};border:${active?`1px solid rgba(${c.accRGB},0.25)`:'1px solid transparent'};border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;color:${active?c.acc:c.muted};font-family:inherit;font-size:13px;font-weight:${active?600:400};text-align:left;width:100%;margin-bottom:2px">
+      ${icon(p.ico,16,active?c.acc:c.muted)}
+      ${t(p.id==='dashboard'?'dash':p.id==='restaurants'?'rest':p.id==='orders'?'ord':p.id==='inventory'?'inv':p.id==='finance'?'fin':p.id==='analytics'?'anal':p.id==='settings'?'set':p.id)}
+      ${p.id==='orders'?`<span style="margin-left:auto;background:${c.acc};color:#fff;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700">5</span>`:''}
+    </button>`;
+  }).join('');
+
+  const langOpts = Object.entries(LANGS).map(([v,l])=>`<option value="${v}" ${v===state.lang?'selected':''}>${l}</option>`).join('');
+  const curOpts = Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}" ${k===state.currency?'selected':''}>${v.s} ${k} — ${v.n}</option>`).join('');
+
+  const inner = `
+    <div style="display:flex;flex-direction:column;height:100%">
+      <div style="padding:16px 16px 20px;display:flex;align-items:center;gap:10px">
+        ${festoLogo(36)}
+        <div style="flex:1"><div style="color:${c.text};font-size:15px;font-weight:700;line-height:1.1">Festo</div><div style="color:${c.dim};font-size:10px;letter-spacing:0.08em">ENTERPRISE</div></div>
+        ${mob?`<button data-action="closeSidebar" style="background:none;border:none;color:${c.muted};cursor:pointer;padding:4px;display:flex">${icon('close',20,c.muted)}</button>`:''}
+      </div>
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:10px;padding:10px 12px;margin:0 12px 16px;cursor:pointer;display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:7px;background:rgba(${c.accRGB},0.15);display:flex;align-items:center;justify-content:center">${icon('restaurants',14,c.acc)}</div>
+        <div style="flex:1;overflow:hidden"><div style="color:${c.text};font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Sakura Garden</div><div style="color:${c.dim};font-size:11px">3 ${t('rest').toLowerCase()}</div></div>
+        ${icon('arrowRight',12,c.dim)}
+      </div>
+      <div style="flex:1;padding:0 8px;overflow:auto">${nav}</div>
+      <div style="padding:12px 12px 0;border-top:1px solid ${c.border};margin-top:auto">
+        <button data-action="toggleDark" style="width:100%;background:${c.surf};border:1px solid ${c.border};border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;font-family:inherit">
+          ${icon(state.dark?'sun':'moon',16,c.muted)}<span style="color:${c.text};font-size:13px">${state.dark?t('light'):t('dark')}</span>
+        </button>
+        <select id="langSelect" style="width:100%;background:${c.surf};border:1px solid ${c.border};border-radius:10px;padding:9px 12px;color:${c.text};font-size:13px;margin-bottom:8px;outline:none;cursor:pointer;font-family:inherit">${langOpts}</select>
+        <select id="curSelect" style="width:100%;background:${c.surf};border:1px solid ${c.border};border-radius:10px;padding:9px 12px;color:${c.text};font-size:13px;margin-bottom:12px;outline:none;cursor:pointer;font-family:inherit">${curOpts}</select>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,${c.blue},${c.purple});display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon('user',16,'#fff')}</div>
+          <div><div style="color:${c.text};font-size:12px;font-weight:600">Super Admin</div><div style="color:${c.dim};font-size:11px">admin@festo.io</div></div>
+        </div>
+      </div>
+    </div>`;
+
+  if(mob){
+    const overlay = state.sidebarOpen ? `<div id="sidebar-overlay" data-action="closeSidebar" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:900;backdrop-filter:blur(2px)"></div>` : '';
+    return `${overlay}<div style="position:fixed;left:0;top:0;bottom:0;width:260px;background:${c.surf};border-right:1px solid ${c.border};z-index:1000;transform:${state.sidebarOpen?'translateX(0)':'translateX(-100%)'};transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow:auto;display:flex;flex-direction:column;box-shadow:${state.sidebarOpen?'4px 0 40px rgba(0,0,0,0.4)':'none'}">${inner}</div>`;
+  }
+  return `<div style="width:220px;background:${c.surf};border-right:1px solid ${c.border};display:flex;flex-direction:column;flex-shrink:0;overflow:auto">${inner}</div>`;
+}
+
+// ── TOP BAR ──────────────────────────────────────────────────────────────────
+function topBar(){
+  const c = C(); const mob = isMobile();
+  const unread = state.notifs.filter(n=>!n.read).length;
+  const pageNames = {dashboard:t('dash'),restaurants:t('rest'),menu:t('menu'),orders:t('ord'),inventory:t('inv'),finance:t('fin'),staff:t('staff'),analytics:t('anal'),settings:t('set')};
+  return `<div style="background:${c.surf};border-bottom:1px solid ${c.border};padding:${mob?'12px 16px':'14px 24px'};display:flex;align-items:center;gap:12px;flex-shrink:0">
+    ${mob?`<button data-action="openSidebar" style="background:none;border:1px solid ${c.border};border-radius:8px;padding:7px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+      <div style="width:18px;height:2px;background:${c.text};border-radius:2px"></div>
+      <div style="width:18px;height:2px;background:${c.text};border-radius:2px"></div>
+      <div style="width:12px;height:2px;background:${c.text};border-radius:2px"></div>
+    </button>`:''}
+    <h1 style="color:${c.text};font-size:${mob?17:20}px;font-weight:700;margin:0;flex:none">${pageNames[state.page]||state.page}</h1>
+    ${!mob?`<div style="flex:1;max-width:320px;position:relative">
+      <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);display:flex">${icon('search',14,c.dim)}</span>
+      <input placeholder="${t('search')}" style="width:100%;background:${c.card};border:1px solid ${c.border};border-radius:10px;padding:8px 12px 8px 34px;color:${c.text};font-size:13px;outline:none;box-sizing:border-box;font-family:inherit"/>
+    </div>`:''}
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      ${!mob?`<button data-action="toggleDark" style="background:${c.card};border:1px solid ${c.border};border-radius:10px;padding:8px;cursor:pointer;display:flex;align-items:center">${icon(state.dark?'sun':'moon',16,c.muted)}</button>`:''}
+      <button data-action="toggleNotif" style="background:${c.card};border:1px solid ${c.border};border-radius:10px;padding:8px;cursor:pointer;display:flex;align-items:center;position:relative">
+        ${icon('bell',16,c.muted)}
+        ${unread>0?`<span style="position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:${c.acc};border:2px solid ${c.surf}"></span>`:''}
+      </button>
+    </div>
+  </div>`;
+}
+
+// ── PAGES ────────────────────────────────────────────────────────────────────
+function pageDashboard(){
+  const c = C(); const mob = isMobile();
+  const pad = mob?'16px':'24px';
+  const cards = [
+    statCard(t('revToday'),fmt(94200),t('vsYest'),12.4,'dollar',c.acc,[45,52,48,61,78,94,87]),
+    statCard(t('ordToday'),'81',t('vsYest'),8.2,'receipt',c.blue,[38,44,41,52,67,81,74]),
+    statCard(t('avgCheck'),fmt(1163),t('vsYest'),3.8,'trending',c.purple,[1090,1150,1100,1180,1130,1163,1140]),
+    statCard(t('margin'),'68.4%',t('vsWeek'),-2.1,'chart',c.orange,[70,72,68,71,69,68,68])
+  ].join('');
+
+  const recentOrds = mob ? state.orders.map(o=>`
+    <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:${c.text};font-weight:700;font-size:14px">${o.id}</span>${badge(o.status)}</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:12px;color:${c.muted}">${o.time}</span><span style="font-size:13px;color:${c.text};font-weight:700;margin-left:auto">${fmt(o.total)}</span></div>
+    </div>`).join('')
+    : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:520px">${state.orders.map(o=>`
+    <tr style="border-bottom:1px solid ${c.border}">
+      <td style="padding:11px 8px;color:${c.text};font-size:13px;font-weight:600">${o.id}</td>
+      <td style="padding:11px 8px;color:${c.muted};font-size:12px">${o.time}</td>
+      <td style="padding:11px 8px;color:${c.text};font-size:12px">${o.type}</td>
+      <td style="padding:11px 8px;color:${c.text};font-size:13px;font-weight:600">${fmt(o.total)}</td>
+      <td style="padding:11px 8px">${badge(o.status)}</td>
+    </tr>`).join('')}</table></div>`;
+
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(4,1fr)'};gap:12px;margin-bottom:20px">${cards}</div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'2fr 1fr'};gap:14px;margin-bottom:20px">
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'20px'}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+          <div><div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:2px">${t('weekRev')}</div><div style="color:${c.muted};font-size:12px">${t('total')}: ${fmt(468200)}</div></div>
+        </div>
+        ${barChart(state.revenueData)}
+        <div style="display:flex;justify-content:space-between;margin-top:6px">${state.revenueData.map(d=>`<div style="flex:1;text-align:center"><div style="color:${c.dim};font-size:9px">${fmt(d.v/1000,'k')}</div></div>`).join('')}</div>
+      </div>
+      ${!mob?`<div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:18px">
+          <div style="color:${c.muted};font-size:11px;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em">${t('topDishes')}</div>
+          ${state.menuItems.filter(m=>m.hit).slice(0,3).map((m,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="color:${c.dim};font-size:11px;width:14px">#${i+1}</span><div style="flex:1;color:${c.text};font-size:13px">${m.name}</div><span style="color:${c.text};font-size:13px;font-weight:600">${fmt(m.price)}</span></div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'20px'}">
+      <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('recentOrd')}</div>
+      ${recentOrds}
+    </div>
+  </div>`;
+}
+
+function pageMenu(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const cats = ['all','Soups','Main','Starters','Desserts'];
+  const catBtns = cats.map(cat=>`<button data-action="menuFilter-${cat}" style="background:${state.menuFilter===cat?c.accGlow:c.card};border:1px solid ${state.menuFilter===cat?`rgba(${c.accRGB},0.3)`:c.border};border-radius:8px;padding:7px 12px;font-size:12px;color:${state.menuFilter===cat?c.acc:c.muted};cursor:pointer;font-family:inherit;font-weight:${state.menuFilter===cat?600:400}">${cat==='all'?t('all'):cat}</button>`).join('');
+  const filtered = state.menuFilter==='all'?state.menuItems:state.menuItems.filter(m=>m.cat===state.menuFilter);
+  const items = filtered.map(item=>{
+    const margin = ((item.price-item.cost)/item.price*100).toFixed(0);
+    return `<div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'14px':'18px'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div style="width:42px;height:42px;border-radius:11px;background:rgba(${c.accRGB},0.08);display:flex;align-items:center;justify-content:center">${icon('menu',20,c.acc)}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
+          ${item.hit?`<span style="background:rgba(${c.accRGB},0.1);color:${c.acc};border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700">${t('hit')}</span>`:''}
+          ${item.isNew?`<span style="background:rgba(0,224,150,0.1);color:${c.green};border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700">${t('isNew')}</span>`:''}
+        </div>
+      </div>
+      <div style="color:${c.text};font-size:${mob?13:14}px;font-weight:700;margin-bottom:3px">${item.name}</div>
+      <div style="color:${c.dim};font-size:11px;margin-bottom:10px">${item.cat}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+        <div style="background:${c.surf};border-radius:7px;padding:7px 8px"><div style="color:${c.dim};font-size:9px">${t('sellP')}</div><div style="color:${c.text};font-size:12px;font-weight:700">${fmt(item.price)}</div></div>
+        <div style="background:${c.surf};border-radius:7px;padding:7px 8px"><div style="color:${c.dim};font-size:9px">${t('costP')}</div><div style="color:${c.text};font-size:12px;font-weight:700">${fmt(item.cost)}</div></div>
+        <div style="background:${c.surf};border-radius:7px;padding:7px 8px"><div style="color:${c.dim};font-size:9px">Маржа</div><div style="color:${+margin>60?c.green:c.yellow};font-size:12px;font-weight:700">${margin}%</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:${item.stock>20?c.green:c.acc}"></div><span style="color:${c.muted};font-size:11px">${t('stockLbl')}: ${item.stock}</span></div>
+        <div style="display:flex;gap:4px">${btn(icon('edit',13,c.muted),'noop','ghost','sm')}${btn(icon('trash',13,c.muted),'noop','ghost','sm')}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${catBtns}</div>
+      ${btn(icon('plus',14,'#fff')+' '+t('addDish'),'openAddDish')}
+    </div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(3,1fr)'};gap:12px">${items}</div>
+  </div>`;
+}
+
+function pageInventory(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const lowStock = state.ingredients.filter(i=>i.stock<=i.minStock);
+  const stats = [
+    {l:t('stPos'),v:state.ingredients.length,ico:'box'},
+    {l:t('lowSt'),v:lowStock.length,ico:'warning',urgent:lowStock.length>0},
+    {l:t('suppCount'),v:[...new Set(state.ingredients.map(i=>i.supp))].length,ico:'truck'},
+    {l:t('stVal'),v:fmt(state.ingredients.reduce((s,i)=>s+i.cost*i.stock,0).toFixed(0)),ico:'dollar'}
+  ].map(s=>`<div style="background:${c.card};border:1px solid ${s.urgent?`rgba(${c.accRGB},0.3)`:c.border};border-radius:12px;padding:14px 16px">
+    <div style="margin-bottom:6px">${icon(s.ico,20,s.urgent?c.acc:c.muted)}</div>
+    <div style="color:${s.urgent?c.acc:c.text};font-size:${mob?18:22}px;font-weight:700">${s.v}</div>
+    <div style="color:${c.muted};font-size:11px;margin-top:2px">${s.l}</div>
+  </div>`).join('');
+
+  const rows = mob ? state.ingredients.map(item=>{
+    const isLow=item.stock<=item.minStock;
+    return `<div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${isLow?`rgba(${c.accRGB},0.3)`:c.border};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="color:${c.text};font-size:14px;font-weight:700">${item.name}</div><span style="color:${isLow?c.acc:c.text};font-size:13px;font-weight:700">${item.stock} ${item.unit}</span></div>
+      <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap"><span style="color:${c.muted};font-size:11px">${item.cat}</span><span style="color:${c.dim}">•</span><span style="color:${c.muted};font-size:11px">${item.supp}</span></div>
+      <div style="height:4px;background:${c.border};border-radius:2px"><div style="height:100%;width:${Math.min(100,(item.stock/(item.minStock*3))*100)}%;background:${isLow?c.acc:c.green};border-radius:2px"></div></div>
+    </div>`;
+  }).join('')
+  : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:560px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('name'),t('supp'),t('costPer'),t('stockLbl'),t('minSt'),''].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 14px;text-transform:uppercase;letter-spacing:0.05em">${h}</th>`).join('')}</tr></thead><tbody>${state.ingredients.map(item=>{const isLow=item.stock<=item.minStock;return`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:600">${item.name}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${item.supp}</td><td style="padding:12px 14px;color:${c.text};font-size:12px">${fmt(item.cost)}/${item.unit}</td><td style="padding:12px 14px;color:${isLow?c.acc:c.text};font-weight:${isLow?700:400};font-size:13px">${item.stock} ${item.unit}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${item.minStock} ${item.unit}</td><td style="padding:12px 14px">${btn(icon('edit',13,c.muted),'noop','ghost','sm')}</td></tr>`;}).join('')}</tbody></table></div>`;
+
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    ${lowStock.length>0?`<div style="background:rgba(${c.accRGB},0.08);border:1px solid rgba(${c.accRGB},0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px">${icon('warning',16,c.yellow)}<span style="color:${c.acc};font-size:12px;font-weight:600">${t('lowAlert')}: ${lowStock.map(i=>i.name).join(', ')}</span></div>`:''}
+    <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(4,1fr)'};gap:12px;margin-bottom:20px">${stats}</div>
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;overflow:hidden">
+      <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid ${c.border};flex-wrap:wrap;gap:8px">
+        <div style="color:${c.text};font-size:15px;font-weight:700">${t('ingr')}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${btn(icon('download',13,c.muted)+' '+t('receipt'),'noop','ghost','sm')}${btn(icon('upload',13,c.muted)+' '+t('writeOff'),'noop','ghost','sm')}${btn(icon('plus',13,'#fff')+' '+t('addIngr'),'openAddIngr')}</div>
+      </div>
+      <div style="padding:${mob?'12px 16px':'0'}">${rows}</div>
+    </div>
+  </div>`;
+}
+
+function pageFinance(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const income = state.finances.filter(f=>f.type==='income').reduce((s,f)=>s+f.amount,0);
+  const expense = state.finances.filter(f=>f.type==='expense').reduce((s,f)=>s+Math.abs(f.amount),0);
+  const profit = income-expense;
+  const summaries = [
+    {l:t('income'),v:`+${fmt(income)}`,col:c.green,bg:'rgba(0,224,150,0.06)',bord:'rgba(0,224,150,0.15)',ico:'download'},
+    {l:t('expense'),v:`-${fmt(expense)}`,col:c.acc,bg:`rgba(${c.accRGB},0.06)`,bord:`rgba(${c.accRGB},0.15)`,ico:'upload'},
+    {l:t('profit'),v:(profit>0?'+':'')+fmt(profit),col:profit>0?c.green:c.acc,bg:c.card,bord:c.border,ico:'trending'}
+  ].map(s=>`<div style="background:${s.bg};border:1px solid ${s.bord};border-radius:14px;padding:${mob?'12px':'18px 20px'}"><div style="margin-bottom:6px">${icon(s.ico,18,s.col)}</div><div style="color:${c.muted};font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">${s.l}</div><div style="color:${s.col};font-size:${mob?14:22}px;font-weight:700">${s.v}</div></div>`).join('');
+
+  const rows = mob ? state.finances.map(f=>`
+    <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="color:${c.text};font-size:13px;font-weight:600;flex:1;margin-right:8px">${f.desc}</div><div style="color:${f.amount>0?c.green:c.acc};font-weight:700;font-size:14px;white-space:nowrap">${f.amount>0?'+':''}${fmt(f.amount)}</div></div>
+      <div style="display:flex;gap:8px"><span style="color:${c.dim};font-size:11px">${f.date}</span><span style="background:${c.card};border-radius:5px;padding:2px 7px;font-size:10px;color:${c.muted}">${f.cat}</span></div>
+    </div>`).join('')
+  : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:480px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('date'),t('desc'),t('acc'),t('amount')].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 18px;text-transform:uppercase;letter-spacing:0.05em">${h}</th>`).join('')}</tr></thead><tbody>${state.finances.map(f=>`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 18px;color:${c.muted};font-size:12px">${f.date}</td><td style="padding:12px 18px;color:${c.text};font-size:13px">${f.desc}</td><td style="padding:12px 18px;color:${c.muted};font-size:12px">${f.acc}</td><td style="padding:12px 18px;color:${f.amount>0?c.green:c.acc};font-size:13px;font-weight:700">${f.amount>0?'+':''}${fmt(f.amount)}</td></tr>`).join('')}</tbody></table></div>`;
+
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">${summaries}</div>
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;overflow:hidden">
+      <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid ${c.border};flex-wrap:wrap;gap:8px">
+        <div style="color:${c.text};font-size:15px;font-weight:700">${t('cashBook')}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${btn(icon('download',13,c.muted)+' ПКО','noop','ghost','sm')}${btn(icon('upload',13,c.muted)+' РКО','noop','ghost','sm')}</div>
+      </div>
+      <div style="padding:${mob?'12px 16px':'0'}">${rows}</div>
+    </div>
+  </div>`;
+}
+
+function pageStaff(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const staffIcons = ['restaurants','staff','finance','plate'];
+  const cards = state.staffList.map((m,i)=>`
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'14px':'18px'};display:flex;gap:14px">
+      <div style="width:50px;height:50px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,${c.blue}20,${c.purple}20);border:1px solid ${c.blue}30;display:flex;align-items:center;justify-content:center">${icon(staffIcons[i]||'user',22,c.blue)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+          <div><div style="color:${c.text};font-size:14px;font-weight:700">${m.name}</div><div style="color:${c.muted};font-size:12px">${m.role}</div></div>
+          ${badge(m.status)}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div style="background:${c.surf};border-radius:8px;padding:8px 10px"><div style="color:${c.dim};font-size:9px;margin-bottom:2px">${t('hourly')}</div><div style="color:${c.text};font-size:12px;font-weight:700">${fmt(m.rate)}</div></div>
+          <div style="background:${c.surf};border-radius:8px;padding:8px 10px"><div style="color:${c.dim};font-size:9px;margin-bottom:2px">${t('hours')}</div><div style="color:${c.text};font-size:12px;font-weight:700">${m.hours}ч</div></div>
+          <div style="background:${c.surf};border-radius:8px;padding:8px 10px"><div style="color:${c.dim};font-size:9px;margin-bottom:2px">${t('salary')}</div><div style="color:${c.green};font-size:12px;font-weight:700">${fmt(m.rate*m.hours)}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px">${btn(icon('plus',14,'#fff')+' '+t('addStaff'),'openAddStaff')}</div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'repeat(2,1fr)'};gap:14px">${cards}</div>
+  </div>`;
+}
+
+function pageOrders(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const statusCounts = [{l:'Новые',c:2,ico:'plus',col:c.yellow},{l:'Готовятся',c:1,ico:'clock',col:c.blue},{l:'Готовы',c:1,ico:'check',col:c.purple},{l:'Доставлены',c:2,ico:'truck',col:c.green}];
+  const statCards = statusCounts.map(s=>`<div style="background:${c.card};border:1px solid ${c.border};border-radius:12px;padding:${mob?'10px 12px':'14px 16px'};display:flex;flex-direction:column;gap:4px">${icon(s.ico,16,s.col)}<div style="color:${c.muted};font-size:${mob?10:12}px;margin-top:2px">${s.l}</div><div style="color:${s.col};font-weight:700;font-size:${mob?18:22}px">${s.c}</div></div>`).join('');
+  const typeIcon = {delivery:'truck','dine-in':'plate',pickup:'bag'};
+  const typeColor = {delivery:c.blue,'dine-in':c.purple,pickup:c.orange};
+
+  const rows = mob ? state.orders.map(o=>`
+    <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:${c.text};font-weight:700;font-size:14px">${o.id}</span>${badge(o.status)}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:${typeColor[o.type]}">${icon(typeIcon[o.type]||'box',13,typeColor[o.type])} ${t(o.type)||o.type}</span><span style="color:${c.dim};font-size:11px">${o.time}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="background:${c.card};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span><span style="color:${c.text};font-weight:700;font-size:14px">${fmt(o.total)}</span></div>
+    </div>`).join('')
+  : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:540px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('ord'),t('date'),t('amount'),t('payment'),t('status')].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 14px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead><tbody>${state.orders.map(o=>`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${o.id}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${o.time}</td><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${fmt(o.total)}</td><td style="padding:12px 14px"><span style="background:${c.surf};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span></td><td style="padding:12px 14px">${badge(o.status)}</td></tr>`).join('')}</tbody></table></div>`;
+
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">${statCards}</div>
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid ${c.border}"><div style="color:${c.text};font-size:15px;font-weight:700">${t('ord')} — сегодня</div></div>
+      <div style="padding:${mob?'12px 16px':'0'}">${rows}</div>
+    </div>
+  </div>`;
+}
+
+function pageRestaurants(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const cards = state.restaurants.map(r=>`
+    <div style="background:${c.card};border:1px solid ${c.border};border-radius:18px;overflow:hidden">
+      <div style="background:linear-gradient(135deg,${c.accGlow},transparent);padding:22px 20px 16px;border-bottom:1px solid ${c.border};display:flex;align-items:center;gap:14px">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(${c.accRGB},0.1);border:1px solid rgba(${c.accRGB},0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon('restaurants',24,c.acc)}</div>
+        <div style="flex:1"><div style="color:${c.text};font-size:16px;font-weight:700">${r.name}</div><div style="color:${c.muted};font-size:12px">${r.cuisine}</div></div>
+        ${badge(r.status)}
+      </div>
+      <div style="padding:16px 20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="background:${c.surf};border-radius:9px;padding:10px 12px"><div style="color:${c.dim};font-size:10px;margin-bottom:2px">Выручка</div><div style="color:${c.text};font-size:14px;font-weight:700">${fmt(r.revenue)}</div></div>
+          <div style="background:${c.surf};border-radius:9px;padding:10px 12px"><div style="color:${c.dim};font-size:10px;margin-bottom:2px">${t('ord')}</div><div style="color:${c.text};font-size:14px;font-weight:700">${r.orders.toLocaleString()}</div></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${btn(icon('settings',13,c.muted),'noop','ghost','sm')}${btn(icon('globe',13,c.muted),'noop','ghost','sm')}${btn(t('manage'),'noop','primary','sm')}</div>
+      </div>
+    </div>`).join('');
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px">${btn(icon('plus',14,'#fff')+' '+t('newRest'),'openAddRest')}</div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'repeat(3,1fr)'};gap:14px">${cards}
+      <div data-action="openAddRest" style="background:${c.card};border:2px dashed ${c.border};border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;cursor:pointer;min-height:200px">
+        <div style="width:44px;height:44px;border-radius:11px;background:${c.surf};border:1px solid ${c.border};display:flex;align-items:center;justify-content:center;margin-bottom:10px">${icon('plus',22,c.muted)}</div>
+        <div style="color:${c.text};font-size:14px;font-weight:600">${t('newRest')}</div>
+        <div style="color:${c.dim};font-size:11px;margin-top:4px">&lt; 1 ч</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pageAnalytics(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const topCards = [
+    {l:t('monthRev'),v:fmt(2184000),ch:'+18%',ico:'dollar'},
+    {l:t('monthOrd'),v:'2 991',ch:'+12%',ico:'receipt'},
+    {l:t('avgCheck'),v:fmt(1104),ch:'+5%',ico:'trending'}
+  ].map(s=>`<div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'14px':'20px'}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">${icon(s.ico,22,c.muted)}<span style="color:${c.green};font-size:11px;font-weight:600;background:rgba(0,224,150,0.1);padding:3px 8px;border-radius:6px">${s.ch}</span></div>
+    <div style="color:${c.text};font-size:${mob?20:24}px;font-weight:700;margin-bottom:2px">${s.v}</div>
+    <div style="color:${c.muted};font-size:11px">${s.l}</div>
+  </div>`).join('');
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'repeat(3,1fr)'};gap:12px;margin-bottom:20px">${topCards}</div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'3fr 2fr'};gap:14px">
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'20px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:4px">${t('weekRev')}</div>
+        <div style="color:${c.muted};font-size:12px;margin-bottom:16px">Июнь 2026</div>
+        ${barChart(state.revenueData)}
+      </div>
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'20px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('topD')}</div>
+        ${state.menuItems.slice(0,5).map((m,i)=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="color:${i<3?c.acc:c.dim};font-size:11px;font-weight:700;width:18px">#${i+1}</span><div style="flex:1"><div style="color:${c.text};font-size:12px;font-weight:600">${m.name}</div><div style="height:3px;background:${c.surf};border-radius:2px;margin-top:3px"><div style="height:100%;width:${80-i*14}%;background:${i===0?c.acc:c.border};border-radius:2px"></div></div></div><span style="color:${c.muted};font-size:11px;flex-shrink:0">${fmt(m.price)}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function pageSettings(){
+  const c = C(); const mob = isMobile(); const pad = mob?'16px':'24px';
+  const langOpts = Object.entries(LANGS).map(([v,l])=>({v,l}));
+  const curOpts = Object.entries(CURRENCIES).map(([k,v])=>({v:k,l:`${v.s} ${k} — ${v.n}`}));
+  const accentColors = ['#7B00FF','#FF2D20','#4B7BFF','#00E096','#FFD60A','#FF6B35'];
+  const integrations = [{n:'POS-терминал',s:'connected',ico:'pos'},{n:'Кухонный принтер',s:'connected',ico:'printer'},{n:'Онлайн-эквайринг',s:'pending',ico:'card'},{n:'QR Pay',s:'disconnected',ico:'qr'},{n:'SMS',s:'connected',ico:'sms'},{n:'Push',s:'connected',ico:'push'}];
+  const roles = [{r:'Super Admin',p:'Полный доступ',ico:'crown'},{r:'Owner',p:'Свои рестораны',ico:'building'},{r:'Restaurant Admin',p:'Меню, персонал, склад',ico:'settings'},{r:'Manager',p:'Заказы, смены, табель',ico:'orders'},{r:'Cashier',p:'Касса и заказы',ico:'finance'}];
+  const viewModes = [{v:'auto',l:t('autoMode'),d:'По размеру экрана',ico:'activity'},{v:'desktop',l:t('desktopMode'),d:'Всегда десктоп',ico:'monitor'},{v:'mobile',l:t('mobileMode'),d:'Всегда мобильный',ico:'smartphone'}];
+
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'1fr 1fr'};gap:14px">
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:18px">${t('genSet')}</div>
+        ${inputField(t('restName'),'restNameInput',state.restName,'text')}
+        ${selectField(t('lang'),'langSelectSettings',state.lang,langOpts)}
+        ${selectField(t('cur'),'curSelectSettings',state.currency,curOpts)}
+        <div style="margin-bottom:16px">
+          <div style="color:${c.muted};font-size:11px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Тема</div>
+          <div style="display:flex;gap:8px">
+            <button data-action="setLight" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${!state.dark?c.acc:c.border};background:${!state.dark?c.accGlow:c.surf};color:${!state.dark?c.acc:c.muted};cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px">${icon('sun',14,!state.dark?c.acc:c.muted)} ${t('light')}</button>
+            <button data-action="setDark" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${state.dark?c.acc:c.border};background:${state.dark?c.accGlow:c.surf};color:${state.dark?c.acc:c.muted};cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px">${icon('moon',14,state.dark?c.acc:c.muted)} ${t('dark')}</button>
+          </div>
+        </div>
+        ${btn(icon('check',14,'#fff')+' '+t('save'),'saveSettings','primary','md')}
+      </div>
+
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:18px">${t('brandStyle')}</div>
+        <div style="margin-bottom:16px">
+          <div style="color:${c.muted};font-size:11px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">${t('accentC')}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">${accentColors.map(col=>`<div data-action="setAccent-${col}" style="width:36px;height:36px;border-radius:9px;background:${col};cursor:pointer;border:${state.accent===col?'3px solid white':'2px solid transparent'};box-shadow:${state.accent===col?`0 0 14px ${col}`:'none'};transition:all 0.15s"></div>`).join('')}</div>
+        </div>
+        <div style="background:${c.surf};border-radius:10px;padding:14px 16px;margin-bottom:16px">
+          <div style="color:${c.muted};font-size:11px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">${t('preview')}</div>
+          <div style="display:flex;align-items:center;gap:10px">${festoLogo(34)}<div><div style="color:${c.text};font-size:14px;font-weight:700">${state.restName}</div><div style="color:${c.acc};font-size:11px">● ${t('online')}</div></div></div>
+        </div>
+        ${inputField(t('domain'),'domainInput','sakura.festo.io')}
+        ${btn(icon('palette',14,'#fff')+' '+t('applyStyle'),'noop')}
+      </div>
+
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'};${mob?'':'grid-column:1 / -1'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:6px">${t('viewMode')}</div>
+        <div style="color:${c.muted};font-size:12px;margin-bottom:18px">Принудительно задать макет для текущего устройства</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          ${viewModes.map(vm=>`<button data-action="setViewMode-${vm.v}" style="flex:1;min-width:140px;background:${state.viewMode===vm.v?c.accGlow:c.surf};border:2px solid ${state.viewMode===vm.v?`rgba(${c.accRGB},0.4)`:c.border};border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;font-family:inherit;text-align:left;transition:all 0.15s">
+            <div style="width:38px;height:38px;border-radius:10px;background:${state.viewMode===vm.v?`rgba(${c.accRGB},0.15)`:c.card};display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon(vm.ico,18,state.viewMode===vm.v?c.acc:c.muted)}</div>
+            <div style="flex:1"><div style="color:${state.viewMode===vm.v?c.acc:c.text};font-size:13px;font-weight:600">${vm.l}</div><div style="color:${c.dim};font-size:11px;margin-top:2px">${vm.d}</div></div>
+            ${state.viewMode===vm.v?`<div style="width:20px;height:20px;border-radius:50%;background:${c.acc};display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon('check',11,'#fff')}</div>`:''}
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('integr')}</div>
+        ${integrations.map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid ${c.border}">
+          <div style="width:32px;height:32px;border-radius:8px;background:${c.surf};display:flex;align-items:center;justify-content:center">${icon(i.ico,16,c.muted)}</div>
+          <span style="flex:1;color:${c.text};font-size:13px">${i.n}</span>
+          ${badge(i.s==='connected'?'active':i.s==='pending'?'preparing':'on-leave')}
+          ${btn(i.s==='connected'?t('change'):t('connect'),'noop','ghost','sm')}
+        </div>`).join('')}
+      </div>
+
+      <div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:${mob?'16px':'22px'}">
+        <div style="color:${c.text};font-size:15px;font-weight:700;margin-bottom:16px">${t('roles')}</div>
+        ${roles.map(r=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid ${c.border}">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(${c.accRGB},0.08);display:flex;align-items:center;justify-content:center">${icon(r.ico,16,c.acc)}</div>
+          <div style="flex:1"><div style="color:${c.text};font-size:13px;font-weight:600">${r.r}</div><div style="color:${c.dim};font-size:11px">${r.p}</div></div>
+          ${btn(icon('settings',12,c.muted)+' '+t('configure'),'noop','ghost','sm')}
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── MODALS ───────────────────────────────────────────────────────────────────
+function buildModal(){
+  if(!state.modal) return '';
+  const c = C();
+  if(state.modal==='addDish') return modal(t('newDish'), `
+    ${inputField(t('dishName'),'newDishName','','text','Tom Yum')}
+    ${selectField(t('cat'),'newDishCat','Main',[{v:'Main',l:'Main'},{v:'Soups',l:'Soups'},{v:'Starters',l:'Starters'},{v:'Desserts',l:'Desserts'}])}
+    ${inputField(t('sellP'),'newDishPrice','','number','1200')}
+    ${inputField(t('costP'),'newDishCost','','number','380')}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('create'),'addDishConfirm')}</div>`);
+  if(state.modal==='addIngr') return modal(t('newIngr'), `
+    ${inputField(t('name'),'newIngrName','','text','Креветки')}
+    ${inputField(t('supp'),'newIngrSupp','','text','OceanFresh')}
+    ${inputField(t('costPer'),'newIngrCost','','number','1800')}
+    ${inputField(t('stockLbl'),'newIngrStock','','number','10')}
+    ${inputField(t('minSt'),'newIngrMin','','number','5')}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('addIngr'),'addIngrConfirm')}</div>`);
+  if(state.modal==='addStaff') return modal(t('newEmp'), `
+    ${inputField(t('fullName'),'newStaffName','','text','Иванов Иван')}
+    ${inputField(t('pos'),'newStaffRole','','text','Шеф-повар')}
+    ${inputField(t('hourly'),'newStaffRate','','number','850')}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('addStaff'),'addStaffConfirm')}</div>`);
+  if(state.modal==='addRest') return modal(t('newRest'), `
+    ${inputField(t('restName'),'newRestName','','text','La Bella Italia')}
+    ${inputField(t('cuisine'),'newRestCuisine','','text','Italian')}
+    ${inputField(t('subd'),'newRestSubd','','text','labella.festo.io')}
+    ${inputField(t('ownD'),'newRestDomain','','text','labella.com')}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('createRest'),'addRestConfirm')}</div>`);
+  return '';
+}
+
+// ── MAIN BUILD ───────────────────────────────────────────────────────────────
+function buildApp(){
+  const c = C(); const mob = isMobile();
+  const pages = {dashboard:pageDashboard,restaurants:pageRestaurants,menu:pageMenu,orders:pageOrders,inventory:pageInventory,finance:pageFinance,staff:pageStaff,analytics:pageAnalytics,settings:pageSettings};
+  const pageContent = (pages[state.page]||pageDashboard)();
+  const viewBar = state.viewMode!=='auto' ? `<div style="position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${c.acc},#8B5CF6);z-index:9999;box-shadow:0 0 10px rgba(${c.accRGB},0.5)"></div>` : '';
+
+  return `
+  <div style="display:flex;height:100vh;background:${c.bg};color:${c.text};overflow:hidden;position:relative">
+    ${viewBar}
+    ${sidebar()}
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+      ${topBar()}
+      ${pageContent}
+    </div>
+    ${state.notifOpen ? notifPanel() : ''}
+    ${buildModal()}
+  </div>`;
+}
+
+// ── EVENTS ───────────────────────────────────────────────────────────────────
+function bindEvents(){
+  document.addEventListener('click', handleClick, {once:true});
+  document.addEventListener('change', handleChange);
+
+  // input focus styles
+  document.querySelectorAll('input,select').forEach(el=>{
+    el.addEventListener('focus',()=>el.style.borderColor=state.accent);
+    el.addEventListener('blur',()=>{ const c=C(); el.style.borderColor=c.border; });
+  });
+}
+
+function handleClick(e){
+  const el = e.target.closest('[data-action]');
+  if(!el){ document.addEventListener('click',handleClick,{once:true}); return; }
+  const action = el.dataset.action;
+
+  if(action==='noop'){}
+  else if(action.startsWith('nav-')){ setState({page:action.slice(4),sidebarOpen:false}); }
+  else if(action==='openSidebar'){ setState({sidebarOpen:true}); }
+  else if(action==='closeSidebar'){ setState({sidebarOpen:false}); }
+  else if(action==='toggleDark'){ setState({dark:!state.dark}); }
+  else if(action==='setDark'){ setState({dark:true}); }
+  else if(action==='setLight'){ setState({dark:false}); }
+  else if(action==='toggleNotif'){ setState({notifOpen:!state.notifOpen}); }
+  else if(action==='closeNotif'){ setState({notifOpen:false}); }
+  else if(action==='markAllRead'){ setState({notifs:state.notifs.map(n=>({...n,read:true})),notifOpen:true}); }
+  else if(action==='openAddDish'){ setState({modal:'addDish'}); }
+  else if(action==='openAddIngr'){ setState({modal:'addIngr'}); }
+  else if(action==='openAddStaff'){ setState({modal:'addStaff'}); }
+  else if(action==='openAddRest'){ setState({modal:'addRest'}); }
+  else if(action==='closeModal'){ setState({modal:null}); }
+  else if(action.startsWith('menuFilter-')){ setState({menuFilter:action.slice(11)}); }
+  else if(action.startsWith('setAccent-')){ setState({accent:action.slice(10)}); }
+  else if(action.startsWith('setViewMode-')){ setState({viewMode:action.slice(12)}); }
+  else if(action==='saveSettings'){
+    const restNameEl = document.getElementById('restNameInput');
+    const langEl = document.getElementById('langSelectSettings');
+    const curEl = document.getElementById('curSelectSettings');
+    const updates = {};
+    if(restNameEl) updates.restName = restNameEl.value||state.restName;
+    if(langEl) updates.lang = langEl.value;
+    if(curEl) updates.currency = curEl.value;
+    setState(updates);
+  }
+  else if(action==='addDishConfirm'){
+    const name = document.getElementById('newDishName')?.value;
+    const cat = document.getElementById('newDishCat')?.value||'Main';
+    const price = parseFloat(document.getElementById('newDishPrice')?.value)||0;
+    const cost = parseFloat(document.getElementById('newDishCost')?.value)||0;
+    if(name){ setState(s=>({...s,menuItems:[...s.menuItems,{id:Date.now(),name,cat,price,cost,stock:50,hit:false,isNew:true}],modal:null})); }
+  }
+  else if(action==='addIngrConfirm'){
+    const name = document.getElementById('newIngrName')?.value;
+    const supp = document.getElementById('newIngrSupp')?.value||'';
+    const cost = parseFloat(document.getElementById('newIngrCost')?.value)||0;
+    const stock = parseFloat(document.getElementById('newIngrStock')?.value)||0;
+    const minStock = parseFloat(document.getElementById('newIngrMin')?.value)||0;
+    if(name){ setState(s=>({...s,ingredients:[...s.ingredients,{id:Date.now(),name,cat:'Прочее',cost,stock,minStock,unit:'кг',supp}],modal:null})); }
+  }
+  else if(action==='addStaffConfirm'){
+    const name = document.getElementById('newStaffName')?.value;
+    const role = document.getElementById('newStaffRole')?.value||'';
+    const rate = parseFloat(document.getElementById('newStaffRate')?.value)||0;
+    if(name){ setState(s=>({...s,staffList:[...s.staffList,{id:Date.now(),name,role,rate,hours:0,status:'active'}],modal:null})); }
+  }
+  else if(action==='addRestConfirm'){
+    const name = document.getElementById('newRestName')?.value;
+    const cuisine = document.getElementById('newRestCuisine')?.value||'';
+    if(name){ setState(s=>({...s,restaurants:[...s.restaurants,{id:Date.now(),name,cuisine,orders:0,revenue:0,status:'active'}],modal:null})); }
+  }
+
+  document.addEventListener('click',handleClick,{once:true});
+}
+
+function handleChange(e){
+  if(e.target.id==='langSelect'){ setState({lang:e.target.value}); }
+  else if(e.target.id==='curSelect'){ setState({currency:e.target.value}); }
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('resize',()=>{
+  clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(render,50);
+});
+render();
+</script>
+</body>
+</html>
+ENDOFFILE
+echo "Done: $(wc -c < /mnt/user-data/outputs/festo.html) bytes"
