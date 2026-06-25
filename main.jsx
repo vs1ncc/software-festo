@@ -400,7 +400,7 @@ return(<div style={{padding:mobile?"16px":"24px",overflow:"auto",flex:1}}>
   </div>
 </div>);}
  
-export default function App(){
+export default function App(){}
   const [active,setActive]=useState("dashboard");const [sidebarOpen,setSidebarOpen]=useState(false);const [dark,setDark]=useState(true);const [lang,setLang]=useState("ru");const [currency,setCurrency]=useState("RUB");const [accent,setAccent]=useState("#7B00FF");const [viewMode,setViewMode]=useState("auto");const [notifOpen,setNotifOpen]=useState(false);const [notifs,setNotifs]=useState(NOTIFICATIONS);const mobile=useMobile();
   const C=makePalette(dark,accent);
   const t=(key)=>{const d=T[lang]||T.ru;return d[key]||T.ru[key]||key;};
@@ -418,31 +418,7 @@ export default function App(){
       <NotifPanel open={notifOpen} onClose={()=>setNotifOpen(false)} notifs={notifs} onMarkAll={markAll}/>
     </div>
   </AppContext.Provider>);
-}
-// This is the component that will be rendered on your page
-const App = () => {
-  return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>System is active!</h1>
-      <p>If you see this text, React is successfully rendering.</p>
-    </div>
-  );
-};
-
-// This command tells React to find the div with id="root" and display the App inside it
-// This tells React to display the app inside the div with id="root"
+// This command renders your main App component into the root div
+// Final render command
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-    <h1>System is active!</h1>
-    <p>The React dashboard is successfully connected.</p>
-  </div>
-);
-// This block should be the only one at the end of the file
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-    <h1>System is active!</h1>
-    <p>The React dashboard is successfully connected.</p>
-  </div>
-);
+root.render(<App />);
