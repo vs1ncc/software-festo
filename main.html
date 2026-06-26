@@ -23,6 +23,18 @@ input::placeholder{color:#4A4A6A;}
 const ACCENT_COLORS={purple:"#7B00FF",red:"#FF2D20",blue:"#4B7BFF",green:"#00E096",yellow:"#FFD60A",orange:"#FF6B35"};
 const CURRENCIES={RUB:{s:"₽",n:"Рубль",r:1},USD:{s:"$",n:"US Dollar",r:0.011},EUR:{s:"€",n:"Euro",r:0.010},IDR:{s:"Rp",n:"Rupiah",r:175},JPY:{s:"¥",n:"Yen",r:1.65},CNY:{s:"¥",n:"Yuan",r:0.079}};
 const LANGS={ru:"🇷🇺 Русский",en:"🇬🇧 English",zh:"🇨🇳 中文",ja:"🇯🇵 日本語",es:"🇪🇸 Español",fr:"🇫🇷 Français"};
+const TRANSLATIONS={
+  ru:{
+    restaurant:{label:'🍽️ Рестораны',desc:'Меню, заказы, склад, финансы'},
+    entertainment:{label:'🎭 Развлечения',desc:'Мероприятия, бронирования'},
+    building:{label:'🏗️ Строительство',desc:'CRM, накладные, лиды'}
+  },
+  en:{
+    restaurant:{label:'🍽️ Restaurants',desc:'Menu, orders, inventory, finance'},
+    entertainment:{label:'🎭 Entertainment',desc:'Events, bookings'},
+    building:{label:'🏗️ Construction',desc:'CRM, invoices, leads'}
+  }
+};
 const T={
 ru:{dash:"Дашборд",rest:"Рестораны",menu:"Меню",ord:"Заказы",inv:"Склад",fin:"Финансы",staff:"Персонал",anal:"Аналитика",set:"Настройки",search:"Поиск...",revToday:"Выручка сегодня",ordToday:"Заказы",avgCheck:"Средний чек",margin:"Маржинальность",vsYest:"vs вчера",vsWeek:"vs прошлой нед.",weekRev:"Выручка за неделю",total:"Общая",topDishes:"Популярные блюда",recentOrd:"Последние заказы",delivery:"Доставка","dine-in":"Зал",pickup:"Самовывоз",active:"Активен",preparing:"Готовится",ready:"Готов",delivered:"Доставлен","on-leave":"Отпуск",addDish:"Добавить блюдо",newDish:"Новое блюдо",dishName:"Название",cat:"Категория",sellP:"Цена продажи",costP:"Себестоимость",create:"Создать",cancel:"Отмена",stockLbl:"Остаток",hit:"ХИТ",isNew:"NEW",all:"Все",ingr:"Ингредиенты",addIngr:"Добавить",newIngr:"Новый ингредиент",name:"Наименование",supp:"Поставщик",costPer:"Себест.",minSt:"Мин.остаток",unit:"Ед.изм",lowAlert:"Критически мало запасов",income:"Доходы",expense:"Расходы",profit:"Прибыль",cashBook:"Кассовая книга",date:"Дата",desc:"Описание",acc:"Счёт",addStaff:"Добавить сотрудника",newEmp:"Новый сотрудник",fullName:"ФИО",pos:"Должность",hourly:"Почасовая ставка",hours:"Часы / мес",salary:"Зарплата",genSet:"Основные настройки",restName:"Название ресторана",lang:"Язык",cur:"Валюта",save:"Сохранить",brandStyle:"Фирменный стиль",accentC:"Акцентный цвет",preview:"Предпросмотр",online:"Онлайн",domain:"Домен",applyStyle:"Применить",integr:"Интеграции",roles:"Роли и доступ",configure:"Настроить",connect:"Подключить",change:"Изменить",newRest:"Новый ресторан",cuisine:"Кухня",subd:"Поддомен",ownD:"Свой домен",tpl:"Шаблон",createRest:"Создать ресторан",manage:"Управлять",monthRev:"Выручка (июнь)",monthOrd:"Заказов за месяц",topD:"Топ блюд",details:"Детали",allOrds:"Все заказы",stPos:"Позиций",lowSt:"Низкий остаток",suppCount:"Поставщиков",stVal:"Стоимость",receipt:"Поступление",writeOff:"Списание",dark:"Тёмная",light:"Светлая",viewMode:"Режим отображения",autoMode:"Авто",desktopMode:"ПК версия",mobileMode:"Мобильная",notif:"Уведомления",markAll:"Прочитать все",allNotif:"Все уведомления"},
 en:{dash:"Dashboard",rest:"Restaurants",menu:"Menu",ord:"Orders",inv:"Inventory",fin:"Finance",staff:"Staff",anal:"Analytics",set:"Settings",search:"Search...",revToday:"Revenue today",ordToday:"Orders",avgCheck:"Avg. check",margin:"Margin",vsYest:"vs yesterday",vsWeek:"vs last week",weekRev:"Weekly Revenue",total:"Total",topDishes:"Top dishes",recentOrd:"Recent Orders",delivery:"Delivery","dine-in":"Dine-in",pickup:"Pickup",active:"Active",preparing:"Preparing",ready:"Ready",delivered:"Delivered","on-leave":"On leave",addDish:"Add dish",newDish:"New Dish",dishName:"Name",cat:"Category",sellP:"Sell price",costP:"Cost price",create:"Create",cancel:"Cancel",stockLbl:"Stock",hit:"HIT",isNew:"NEW",all:"All",ingr:"Ingredients",addIngr:"Add",newIngr:"New Ingredient",name:"Name",supp:"Supplier",costPer:"Cost",minSt:"Min stock",unit:"Unit",lowAlert:"Low stock critical",income:"Income",expense:"Expenses",profit:"Profit",cashBook:"Cash Book",date:"Date",desc:"Description",acc:"Account",addStaff:"Add staff",newEmp:"New Employee",fullName:"Full name",pos:"Position",hourly:"Hourly rate",hours:"Hours / mo",salary:"Salary",genSet:"General Settings",restName:"Restaurant name",lang:"Language",cur:"Currency",save:"Save",brandStyle:"Brand Style",accentC:"Accent color",preview:"Preview",online:"Online",domain:"Domain",applyStyle:"Apply",integr:"Integrations",roles:"Roles & Access",configure:"Configure",connect:"Connect",change:"Change",newRest:"New Restaurant",cuisine:"Cuisine",subd:"Subdomain",ownD:"Custom domain",tpl:"Template",createRest:"Create restaurant",manage:"Manage",monthRev:"Revenue (June)",monthOrd:"Orders this month",topD:"Top dishes",details:"Details",allOrds:"All orders",stPos:"Positions",lowSt:"Low stock",suppCount:"Suppliers",stVal:"Stock value",receipt:"Receipt",writeOff:"Write-off",dark:"Dark",light:"Light",viewMode:"Display Mode",autoMode:"Auto",desktopMode:"Desktop",mobileMode:"Mobile",notif:"Notifications",markAll:"Mark all read",allNotif:"All notifications"},
@@ -998,11 +1010,13 @@ function pageIntegrations(){
 // ── LANDING ───────────────────────────────────────────────────────────────────
 function landingScreen(){
   const c = C();
+  const currentLang = state.lang || 'ru';
   const langs = Object.entries(LANGS).map(([k,v])=>({k,v}));
+  const selectedLabels = TRANSLATIONS[currentLang] || TRANSLATIONS.ru;
   const types = [
-    {id:'restaurant',label:'🍽️ Рестораны',desc:'Меню, заказы, склад, финансы'},
-    {id:'entertainment',label:'🎭 Развлечения',desc:'Мероприятия, бронирования'},
-    {id:'building',label:'🏗️ Строительство',desc:'CRM, накладные, лиды'}
+    {id:'restaurant',...selectedLabels.restaurant},
+    {id:'entertainment',...selectedLabels.entertainment},
+    {id:'building',...selectedLabels.building}
   ];
   const langBtns = langs.map(l=>`<button data-action="chooseLang-${l.k}" style="padding:9px 14px;border-radius:9px;border:1px solid ${state.lang===l.k?c.acc:c.border};background:${state.lang===l.k?c.accGlow:c.surf};color:${state.lang===l.k?c.acc:c.text};cursor:pointer;font-size:13px;font-weight:600;font-family:inherit">${l.v}</button>`).join('');
   const typeBtns = types.map(ti=>{
