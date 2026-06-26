@@ -320,31 +320,28 @@
       const id = +action.split('-')[1]; const text = document.getElementById('chatMsg')?.value||''; if(!text) return; const lead = leads.find(l=>l.id===id); lead.messages = lead.messages || []; lead.messages.push({from:'operator',text,t:(new Date()).toLocaleTimeString().slice(0,5)}); saveLeads(); openLead(id);
     }
 
-      const id = +action.split('-')[1]; const text = document.getElementById('chatMsg')?.value||''; if(!text) return; const lead = leads.find(l=>l.id===id); lead.messages = lead.messages || []; lead.messages.push({from:'operator',text,t:(new Date()).toLocaleTimeString().slice(0,5)}); saveLeads(); openLead(id);
-    }
-    else if(action==='genInvoice'){
-      const doc = `<div style="padding:8px;border-bottom:1px solid #eee">Invoice · ${companyProfile.name} · ${new Date().toLocaleString()}</div>`;
-      const el = document.getElementById('docs-list'); if(el) el.innerHTML = (el.innerHTML||'') + doc;
-    }
-    else if(action==='calcAdd'){
-      const job = document.getElementById('jobName')?.value||'Job'; const qty = +document.getElementById('jobQty')?.value||1; const cost = +document.getElementById('jobUnitCost')?.value||0; const total = qty*cost; analyticsRows.push({job,cost,qty,total}); const tbody = document.getElementById('analytics-rows'); if(tbody) tbody.innerHTML = analyticsRows.map(r=>`<tr><td style="padding:8px;border-bottom:1px solid #ddd">${r.job}</td><td style="padding:8px;border-bottom:1px solid #ddd">${r.cost}</td><td style="padding:8px;border-bottom:1px solid #ddd">${r.qty}</td><td style="padding:8px;border-bottom:1px solid #ddd">${r.total}</td></tr>`).join('');
-    }
-    else if(action==='saveIntegrations'){
-      integrationSettings.avitoClientId = document.getElementById('avitoClientId')?.value||'';
-      integrationSettings.avitoClientSecret = document.getElementById('avitoClientSecret')?.value||'';
-      integrationSettings.amoSubdomain = document.getElementById('amoSubdomain')?.value||'';
-      integrationSettings.amoAccessToken = document.getElementById('amoAccessToken')?.value||'';
-      integrationSettings.avitoEnabled = !!document.getElementById('toggleAvito')?.checked;
-      integrationSettings.amoEnabled = !!document.getElementById('toggleAmo')?.checked;
-      saveIntegrationSettings();
-      const notice = document.getElementById('integration-notice'); if(notice) notice.innerText = 'Сохранено локально';
-    }
-    else if(action==='fetchLeads'){
+    else if (action === 'genInvoice') {
+        const doc = `<div style="padding:8px;border-bottom:1px solid #eee">Invoice - ${companyProfile.name} - ${new Date().toLocaleString()}</div>`;
+        const el = document.getElementById('docs-list');
+        if (el) el.innerHTML = (el.innerHTML || '') + doc;
+    } else if (action === 'calcAdd') {
+        const job = document.getElementById('jobName')?.value || 'Job';
+        const qty = +document.getElementById('jobQty')?.value || 1;
+        const cost = +document.getElementById('jobUnitCost')?.value || 0;
+    } else if (action === 'saveIntegrations') {
+        integrationSettings.avitoClientId = document.getElementById('avitoClientId')?.value || '';
+        integrationSettings.avitoClientSecret = document.getElementById('avitoClientSecret')?.value || '';
+        integrationSettings.amoSubdomain = document.getElementById('amoSubdomain')?.value || '';
+        integrationSettings.amoAccessToken = document.getElementById('amoAccessToken')?.value || '';
+        integrationSettings.avitoEnabled = !!document.getElementById('toggleAvito')?.checked;
+        saveIntegrationSettings();
+        const notice = document.getElementById('integration-notice');
+        if (notice) notice.innerText = 'Сохранено локально';
+     } else if(action==='fetchLeads'){
       const newLeads = fetchLeadsFromSources();
       const notice = document.getElementById('integration-notice'); if(notice) notice.innerText = newLeads.length ? `Импортировано ${newLeads.length} лидов` : 'Нет включенных источников';
     }
-  }
-
+  
   // global click listener to handle building actions
   document.addEventListener('click', (e)=>{
     const el = e.target.closest('[data-action]'); if(!el) return; const action = el.dataset.action;
@@ -354,6 +351,32 @@
       if(window.buildingComponent && typeof window.buildingComponent.open === 'function'){
         window.buildingComponent.open(part);
       }
+      function renderBuildingDashboard() {
+    const container = document.getElementById('dashboard-container');
+    if (!container) return;
+
+    // Очищаем текущий контент
+    container.innerHTML = '';
+
+    // Генерируем карточки из массива buildings
+    const cards = state.buildings.map(b => `
+        <div class="card" style="border: 1px solid #ccc; padding: 15px; margin: 10px; border-radius: 8px;">
+            <h3>${b.name}</h3>
+            <p>Статус: <strong>${b.status}</strong></p>
+            <p>Бюджет: ${int(b.revenue, '₽')}</p>
+            <p>Дедлайн: ${b.deadline}</p>
+            <button onclick="handleBuildingAction('moveNext-${b.id}')">Следующий этап</button>
+        </div>
+    `).join('');
+
+    container.innerHTML = `<div class="dashboard-grid">${cards}</div>`;
+}
+// ... предыдущие условия
+} else if (action === 'refreshDashboard') {
+    renderBuildingDashboard(); // Dashboard
+    return; // Stop action
+} else if (action === 'openLead-') {
+    // ...
       return;
     }
     // module-specific actions
@@ -587,5 +610,5 @@
     const rows = (inv.items||[]).map(it=>`<tr><td style="padding:10px;border-bottom:1px solid ${c.border}">${it.name}</td><td style="padding:10px;border-bottom:1px solid ${c.border};text-align:right">${it.qty}</td><td style="padding:10px;border-bottom:1px solid ${c.border};text-align:right">${fmt(it.price)}</td><td style="padding:10px;border-bottom:1px solid ${c.border};text-align:right">${fmt(it.total != null ? it.total : it.qty * it.price)}</td></tr>`).join('');
     return `<div style="background:#fff;color:#111;font-family:Inter,Arial,sans-serif;padding:24px;border:1px solid #000"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px"><div><div style="font-size:22px;font-weight:800;margin-bottom:6px">${companyProfile.name}</div><div style="font-size:13px;line-height:1.6">${companyProfile.addr}</div><div style="font-size:13px;line-height:1.6">Телефон: ${companyProfile.phone || '+7 495 000-00-00'}</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:700">Накладная</div><div style="font-size:13px;line-height:1.6">${inv.date}</div><div style="font-size:13px;line-height:1.6">Документ № ${inv.id}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px"><div><div style="font-size:13px;font-weight:700;margin-bottom:6px">Поставщик</div><div style="font-size:13px;line-height:1.6">${companyProfile.name}</div><div style="font-size:13px;line-height:1.6">${companyProfile.addr}</div><div style="font-size:13px;line-height:1.6">Телефон: ${companyProfile.phone || '+7 495 000-00-00'}</div></div><div><div style="font-size:13px;font-weight:700;margin-bottom:6px">Получатель</div><div style="font-size:13px;line-height:1.6">${inv.clientName}</div><div style="font-size:13px;line-height:1.6">${inv.clientAddress}</div><div style="font-size:13px;line-height:1.6">${inv.clientPhone}</div></div></div><table style="width:100%;border-collapse:collapse;margin-bottom:18px"><thead><tr><th style="text-align:left;border-bottom:2px solid #000;padding:10px">Товар</th><th style="text-align:right;border-bottom:2px solid #000;padding:10px">Кол-во</th><th style="text-align:right;border-bottom:2px solid #000;padding:10px">Цена</th><th style="text-align:right;border-bottom:2px solid #000;padding:10px">Сумма</th></tr></thead><tbody>${rows}</tbody></table><div style="display:flex;justify-content:flex-end;font-size:13px;font-weight:700;gap:20px;margin-bottom:40px"><span>Итого:</span><span>${fmt(inv.total)}</span></div><div style="display:flex;justify-content:space-between;gap:20px"><div style="width:45%"><div style="font-size:12px;color:#555;margin-bottom:8px">Подпись поставщика</div><div style="height:48px;border-bottom:1px solid #000"></div></div><div style="width:45%"><div style="font-size:12px;color:#555;margin-bottom:8px">Подпись получателя</div><div style="height:48px;border-bottom:1px solid #000"></div></div></div></div>`;
   }
-
+  }
 })();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<title>Festo Enterprise</title>
+<title>Festo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -22,7 +22,7 @@ input::placeholder{color:#4A4A6A;}
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 const ACCENT_COLORS={purple:"#7B00FF",red:"#FF2D20",blue:"#4B7BFF",green:"#00E096",yellow:"#FFD60A",orange:"#FF6B35"};
 const CURRENCIES={RUB:{s:"₽",n:"Рубль",r:1},USD:{s:"$",n:"US Dollar",r:0.011},EUR:{s:"€",n:"Euro",r:0.010},IDR:{s:"Rp",n:"Rupiah",r:175},JPY:{s:"¥",n:"Yen",r:1.65},CNY:{s:"¥",n:"Yuan",r:0.079}};
-const LANGS={ru:"🇷🇺 Русский",en:"🇬🇧 English",zh:"🇨🇳 中文",ja:"🇯🇵 日本語",es:"🇪🇸 Español",fr:"🇫🇷 Français"};
+const LANGS={ru:"Русский",en:"English",zh:"中文",ja:"日本語",es:"Español",fr:"Français"};
 const T={
 ru:{dash:"Дашборд",rest:"Рестораны",menu:"Меню",ord:"Заказы",inv:"Склад",fin:"Финансы",staff:"Персонал",anal:"Аналитика",set:"Настройки",search:"Поиск...",revToday:"Выручка сегодня",ordToday:"Заказы",avgCheck:"Средний чек",margin:"Маржинальность",vsYest:"vs вчера",vsWeek:"vs прошлой нед.",weekRev:"Выручка за неделю",total:"Общая",topDishes:"Популярные блюда",recentOrd:"Последние заказы",delivery:"Доставка","dine-in":"Зал",pickup:"Самовывоз",active:"Активен",preparing:"Готовится",ready:"Готов",delivered:"Доставлен","on-leave":"Отпуск",addDish:"Добавить блюдо",newDish:"Новое блюдо",dishName:"Название",cat:"Категория",sellP:"Цена продажи",costP:"Себестоимость",create:"Создать",cancel:"Отмена",stockLbl:"Остаток",hit:"ХИТ",isNew:"NEW",all:"Все",ingr:"Ингредиенты",addIngr:"Добавить",newIngr:"Новый ингредиент",name:"Наименование",supp:"Поставщик",costPer:"Себест.",minSt:"Мин.остаток",unit:"Ед.изм",lowAlert:"Критически мало запасов",income:"Доходы",expense:"Расходы",profit:"Прибыль",cashBook:"Кассовая книга",date:"Дата",desc:"Описание",acc:"Счёт",addStaff:"Добавить сотрудника",newEmp:"Новый сотрудник",fullName:"ФИО",pos:"Должность",hourly:"Почасовая ставка",hours:"Часы / мес",salary:"Зарплата",genSet:"Основные настройки",restName:"Название ресторана",lang:"Язык",cur:"Валюта",save:"Сохранить",brandStyle:"Фирменный стиль",accentC:"Акцентный цвет",preview:"Предпросмотр",online:"Онлайн",domain:"Домен",applyStyle:"Применить",integr:"Интеграции",roles:"Роли и доступ",configure:"Настроить",connect:"Подключить",change:"Изменить",newRest:"Новый ресторан",cuisine:"Кухня",subd:"Поддомен",ownD:"Свой домен",tpl:"Шаблон",createRest:"Создать ресторан",manage:"Управлять",monthRev:"Выручка (июнь)",monthOrd:"Заказов за месяц",topD:"Топ блюд",details:"Детали",allOrds:"Все заказы",stPos:"Позиций",lowSt:"Низкий остаток",suppCount:"Поставщиков",stVal:"Стоимость",receipt:"Поступление",writeOff:"Списание",dark:"Тёмная",light:"Светлая",viewMode:"Режим отображения",autoMode:"Авто",desktopMode:"ПК версия",mobileMode:"Мобильная",notif:"Уведомления",markAll:"Прочитать все",allNotif:"Все уведомления"},
 en:{dash:"Dashboard",rest:"Restaurants",menu:"Menu",ord:"Orders",inv:"Inventory",fin:"Finance",staff:"Staff",anal:"Analytics",set:"Settings",search:"Search...",revToday:"Revenue today",ordToday:"Orders",avgCheck:"Avg. check",margin:"Margin",vsYest:"vs yesterday",vsWeek:"vs last week",weekRev:"Weekly Revenue",total:"Total",topDishes:"Top dishes",recentOrd:"Recent Orders",delivery:"Delivery","dine-in":"Dine-in",pickup:"Pickup",active:"Active",preparing:"Preparing",ready:"Ready",delivered:"Delivered","on-leave":"On leave",addDish:"Add dish",newDish:"New Dish",dishName:"Name",cat:"Category",sellP:"Sell price",costP:"Cost price",create:"Create",cancel:"Cancel",stockLbl:"Stock",hit:"HIT",isNew:"NEW",all:"All",ingr:"Ingredients",addIngr:"Add",newIngr:"New Ingredient",name:"Name",supp:"Supplier",costPer:"Cost",minSt:"Min stock",unit:"Unit",lowAlert:"Low stock critical",income:"Income",expense:"Expenses",profit:"Profit",cashBook:"Cash Book",date:"Date",desc:"Description",acc:"Account",addStaff:"Add staff",newEmp:"New Employee",fullName:"Full name",pos:"Position",hourly:"Hourly rate",hours:"Hours / mo",salary:"Salary",genSet:"General Settings",restName:"Restaurant name",lang:"Language",cur:"Currency",save:"Save",brandStyle:"Brand Style",accentC:"Accent color",preview:"Preview",online:"Online",domain:"Domain",applyStyle:"Apply",integr:"Integrations",roles:"Roles & Access",configure:"Configure",connect:"Connect",change:"Change",newRest:"New Restaurant",cuisine:"Cuisine",subd:"Subdomain",ownD:"Custom domain",tpl:"Template",createRest:"Create restaurant",manage:"Manage",monthRev:"Revenue (June)",monthOrd:"Orders this month",topD:"Top dishes",details:"Details",allOrds:"All orders",stPos:"Positions",lowSt:"Low stock",suppCount:"Suppliers",stVal:"Stock value",receipt:"Receipt",writeOff:"Write-off",dark:"Dark",light:"Light",viewMode:"Display Mode",autoMode:"Auto",desktopMode:"Desktop",mobileMode:"Mobile",notif:"Notifications",markAll:"Mark all read",allNotif:"All notifications"},
@@ -96,7 +96,8 @@ let state = {
     {id:3,title:'Заказ стальных балок',company:'ГрандСтрой',contact:'Дмитрий Нечаев',phone:'+7 925 333-44-55',value:3100000,status:'won',notes:'Договор подписан',created:'20.06.2026'},
     {id:4,title:'Кровельные материалы',company:'АльфаКров',contact:'Светлана Яковлева',phone:'+7 903 444-55-66',value:550000,status:'new',notes:'',created:'21.06.2026'},
     {id:5,title:'Трубопрокат партия',company:'МеталТрейд',contact:'Роман Козлов',phone:'+7 912 555-66-77',value:1200000,status:'contact',notes:'Ждут прайс',created:'19.06.2026'},
-    {id:6,title:'Профнастил крупный опт',company:'ДомСтрой',contact:'Ольга Семёнова',phone:'+7 921 666-77-88',value:420000,status:'lost',notes:'Ушли к конкурентам',created:'18.06.2026'}
+    {id:6,title:'Профнастил крупный опт',company:'ДомСтрой',contact:'Ольга Семёнова',phone:'+7 921 666-77-88',value:420000,status:'lost',notes:'Ушли к конкурентам',created:'18.06.2026'},
+    {id:7, title:'Заливка фундамента', company:'СтройСити', contact:'Иван Петров', phone:'+7...', value:500000, status:'new', notes:'', created:'27.06.2026'}
   ],
   restName: 'Sakura Garden'
 };
@@ -1000,9 +1001,9 @@ function landingScreen(){
   const c = C();
   const langs = Object.entries(LANGS).map(([k,v])=>({k,v}));
   const types = [
-    {id:'restaurant',label:'🍽️ Рестораны',desc:'Меню, заказы, склад, финансы'},
-    {id:'entertainment',label:'🎭 Развлечения',desc:'Мероприятия, бронирования'},
-    {id:'building',label:'🏗️ Строительство',desc:'CRM, накладные, лиды'}
+    {id:'restaurant',label:'',desc:'Меню, заказы, склад, финансы'},
+    {id:'entertainment',label:'',desc:'Мероприятия, бронирования'},
+    {id:'building',label:'',desc:'CRM, накладные, лиды'}
   ];
   const langBtns = langs.map(l=>`<button data-action="chooseLang-${l.k}" style="padding:9px 14px;border-radius:9px;border:1px solid ${state.lang===l.k?c.acc:c.border};background:${state.lang===l.k?c.accGlow:c.surf};color:${state.lang===l.k?c.acc:c.text};cursor:pointer;font-size:13px;font-weight:600;font-family:inherit">${l.v}</button>`).join('');
   const typeBtns = types.map(ti=>{
@@ -1021,7 +1022,7 @@ function landingScreen(){
           <svg width="34" height="13" viewBox="0 0 62 18"><text x="0" y="15" font-family="Inter,Arial" font-weight="800" font-size="17" fill="white" letter-spacing="2">FESTO</text></svg>
         </div>
         <div>
-          <div style="color:${c.text};font-size:20px;font-weight:800">Festo Enterprise</div>
+          <div style="color:${c.text};font-size:20px;font-weight:800">Festo</div>
           <div style="color:${c.muted};font-size:12px">Выберите язык и тип системы</div>
         </div>
       </div>
@@ -1035,7 +1036,7 @@ function landingScreen(){
       </div>
       <div style="display:flex;justify-content:flex-end;gap:10px">
         <button data-action="skipSetup" style="background:transparent;border:1px solid ${c.border};padding:10px 18px;border-radius:10px;color:${c.muted};cursor:pointer;font-family:inherit;font-size:13px">Пропустить</button>
-        <button data-action="finishSetup" style="background:linear-gradient(135deg,${c.acc},${c.acc}CC);border:none;padding:10px 20px;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit">Открыть Festo →</button>
+        <button data-action="finishSetup" style="background:linear-gradient(135deg,${c.acc},${c.acc}CC);border:none;padding:10px 20px;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit">Открыть →</button>
       </div>
     </div>
   </div>`;
@@ -1231,4 +1232,9 @@ window.addEventListener('resize',()=>{
 render();
 </script>
 </body>
+<!-- Уведомление о Cookies -->
+<div id="cookie-banner" style="position: fixed; bottom: 0; width: 100%; background: #333; color: white; padding: 15px; text-align: center; display: none; z-index: 9999;">
+    Мы используем файлы cookie для улучшения вашего опыта.
+    <button onclick="acceptCookies()" style="margin-left: 20px; padding: 5px 15px; cursor: pointer;">Принять</button>
+</div>
 </html>
