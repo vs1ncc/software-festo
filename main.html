@@ -1,5 +1,3 @@
-
-Festo · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -39,9 +37,6 @@ let state = {
   page: 'dashboard', sidebarOpen: false, dark: true, lang: 'ru',
   currency: 'RUB', accent: '#7B00FF', viewMode: 'auto',
   notifOpen: false,
-  // initial setup: language + program type chooser
-  setupComplete: false,
-  programType: null, // 'restaurant' | 'entertainment' | 'building'
   notifs: [
     {id:1,type:'warning',title:'Низкий остаток',msg:'Лемонграсс: 3.2 кг (мин. 5 кг)',time:'2 мин назад',read:false},
     {id:2,type:'success',title:'Заказ #4521 принят',msg:'Доставка · 4 позиции · ₽3 840',time:'5 мин назад',read:false},
@@ -93,15 +88,18 @@ let state = {
   ],
   revenueData:[{d:'Пн',v:45200},{d:'Вт',v:52800},{d:'Ср',v:48100},{d:'Чт',v:61400},{d:'Пт',v:78900},{d:'Сб',v:94200},{d:'Вс',v:87600}],
   menuFilter: 'all',
-  modal: null, // {type, data}
+  modal: null,
+  crmFilter: 'all',
+  crmLeads: [
+    {id:1,title:'Поставка арматуры 500т',company:'СтройМаш ООО',contact:'Алексей Иванов',phone:'+7 905 111-22-33',value:2450000,status:'negotiation',notes:'Встреча в пятницу',created:'23.06.2026'},
+    {id:2,title:'Металлоконструкции склад',company:'ЛогистикГрупп',contact:'Марина Орлова',phone:'+7 916 222-33-44',value:870000,status:'contact',notes:'Запросили КП',created:'22.06.2026'},
+    {id:3,title:'Заказ стальных балок',company:'ГрандСтрой',contact:'Дмитрий Нечаев',phone:'+7 925 333-44-55',value:3100000,status:'won',notes:'Договор подписан',created:'20.06.2026'},
+    {id:4,title:'Кровельные материалы',company:'АльфаКров',contact:'Светлана Яковлева',phone:'+7 903 444-55-66',value:550000,status:'new',notes:'',created:'21.06.2026'},
+    {id:5,title:'Трубопрокат партия',company:'МеталТрейд',contact:'Роман Козлов',phone:'+7 912 555-66-77',value:1200000,status:'contact',notes:'Ждут прайс',created:'19.06.2026'},
+    {id:6,title:'Профнастил крупный опт',company:'ДомСтрой',contact:'Ольга Семёнова',phone:'+7 921 666-77-88',value:420000,status:'lost',notes:'Ушли к конкурентам',created:'18.06.2026'}
+  ],
   restName: 'Sakura Garden'
 };
-
-// Restore persisted orders if present
-try{
-  const saved = localStorage.getItem('festo_orders');
-  if(saved){ state.orders = JSON.parse(saved); }
-}catch(e){console.warn('Failed to load saved orders',e)}
  
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function t(key){ return (T[state.lang]||T.ru)[key] || key; }
@@ -328,31 +326,31 @@ function notifPanel(){
 // ── SIDEBAR ──────────────────────────────────────────────────────────────────
 function sidebar(){
   const c = C(); const mob = isMobile();
-  // pages vary depending on selected program type; building companies replace restaurant-specific pages
-  const pages = (()=>{
-    const common = [{id:'dashboard',ico:'dashboard'}];
-    const shared = [{id:'inventory',ico:'inventory'},{id:'finance',ico:'finance'},{id:'staff',ico:'staff'},{id:'analytics',ico:'analytics'},{id:'settings',ico:'settings'}];
-    if(state.programType==='building'){
-      return common.concat([{id:'building',ico:'building'}], shared);
-    }
-    // default: restaurant mode
-    return common.concat([{id:'restaurants',ico:'restaurants'},{id:'menu',ico:'menu'},{id:'orders',ico:'orders'}], shared);
-  })();
-  const nav = pages.map(p=>{
-    const active = state.page===p.id;
-    const label = p.id==='dashboard' ? t('dash')
-      : p.id==='restaurants' ? t('rest')
-      : p.id==='orders' ? t('ord')
-      : p.id==='inventory' ? t('inv')
-      : p.id==='finance' ? t('fin')
-      : p.id==='analytics' ? t('anal')
-      : p.id==='settings' ? t('set')
-      : p.id==='menu' ? t('menu')
-      : p.id==='staff' ? t('staff')
-      : p.id==='building' ? 'CRM' : p.id;
+  // Dynamic nav based on program type
+  const isBuildingMode = state.programType === 'building';
+  const navPages = isBuildingMode ? [
+    {id:'crm',         ico:'building', label:t('crm')},
+    {id:'orders',      ico:'orders',   label:t('ord')},
+    {id:'waybills',    ico:'receipt',  label:t('waybills')},
+    {id:'integrations',ico:'settings', label:t('integrations')}
+  ] : [
+    {id:'dashboard',   ico:'dashboard', label:t('dash')},
+    {id:'restaurants', ico:'restaurants',label:t('rest')},
+    {id:'menu',        ico:'menu',      label:t('menu')},
+    {id:'orders',      ico:'orders',    label:t('ord')},
+    {id:'inventory',   ico:'inventory', label:t('inv')},
+    {id:'finance',     ico:'finance',   label:t('fin')},
+    {id:'staff',       ico:'staff',     label:t('staff')},
+    {id:'analytics',   ico:'analytics', label:t('anal')},
+    {id:'settings',    ico:'settings',  label:t('set')}
+  ];
+  const nav = navPages.map(p=>{
+    const active = isBuildingMode
+      ? (state.page==='building' && state.activeView===p.id)
+      : (state.page===p.id);
     return `<button data-action="nav-${p.id}" style="background:${active?c.accGlow:'transparent'};border:${active?`1px solid rgba(${c.accRGB},0.25)`:'1px solid transparent'};border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;color:${active?c.acc:c.muted};font-family:inherit;font-size:13px;font-weight:${active?600:400};text-align:left;width:100%;margin-bottom:2px">
       ${icon(p.ico,16,active?c.acc:c.muted)}
-      ${label}
+      ${p.label}
       ${p.id==='orders'?`<span style="margin-left:auto;background:${c.acc};color:#fff;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700">5</span>`:''}
     </button>`;
   }).join('');
@@ -398,13 +396,14 @@ function topBar(){
   const c = C(); const mob = isMobile();
   const unread = state.notifs.filter(n=>!n.read).length;
   const pageNames = {dashboard:t('dash'),restaurants:t('rest'),menu:t('menu'),orders:t('ord'),inventory:t('inv'),finance:t('fin'),staff:t('staff'),analytics:t('anal'),settings:t('set')};
+  const buildingViewNames = {crm:t('crm'),orders:t('ord'),waybills:t('waybills'),integrations:t('integrations')};
   return `<div style="background:${c.surf};border-bottom:1px solid ${c.border};padding:${mob?'12px 16px':'14px 24px'};display:flex;align-items:center;gap:12px;flex-shrink:0">
     ${mob?`<button data-action="openSidebar" style="background:none;border:1px solid ${c.border};border-radius:8px;padding:7px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px;flex-shrink:0">
       <div style="width:18px;height:2px;background:${c.text};border-radius:2px"></div>
       <div style="width:18px;height:2px;background:${c.text};border-radius:2px"></div>
       <div style="width:12px;height:2px;background:${c.text};border-radius:2px"></div>
     </button>`:''}
-    <h1 style="color:${c.text};font-size:${mob?17:20}px;font-weight:700;margin:0;flex:none">${pageNames[state.page]||state.page}</h1>
+    <h1 style="color:${c.text};font-size:${mob?17:20}px;font-weight:700;margin:0;flex:none">${state.page==='building'?(buildingViewNames[state.activeView]||t('crm')):(pageNames[state.page]||state.page)}</h1>
     ${!mob?`<div style="flex:1;max-width:320px;position:relative">
       <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);display:flex">${icon('search',14,c.dim)}</span>
       <input placeholder="${t('search')}" style="width:100%;background:${c.card};border:1px solid ${c.border};border-radius:10px;padding:8px 12px 8px 34px;color:${c.text};font-size:13px;outline:none;box-sizing:border-box;font-family:inherit"/>
@@ -607,7 +606,7 @@ function pageOrders(){
     <div style="background:${c.surf};border-radius:10px;padding:12px 14px;border:1px solid ${c.border};margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:${c.text};font-weight:700;font-size:14px">${o.id}</span>${badge(o.status)}</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:${typeColor[o.type]}">${icon(typeIcon[o.type]||'box',13,typeColor[o.type])} ${t(o.type)||o.type}</span><span style="color:${c.dim};font-size:11px">${o.time}</span></div>
-      <div style="display:flex;justify-content:space-between;align-items:center"><span style="background:${c.card};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span><span style="color:${c.text};font-weight:700;font-size:14px">${fmt(o.total)}</span>${o.status==='confirmed'?'<span style="color:'+c.green+';font-weight:700;margin-left:12px">Подтвержден</span>':`<button data-action="orderConfirm-${o.id}" style="margin-left:12px;padding:6px 8px;border-radius:8px;background:${c.acc};color:#fff;border:none">Подтвердить</button>`}</div>
+      <div style="display:flex;justify-content:space-between"><span style="background:${c.card};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span><span style="color:${c.text};font-weight:700;font-size:14px">${fmt(o.total)}</span></div>
     </div>`).join('')
   : `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:540px"><thead><tr style="border-bottom:1px solid ${c.border}">${[t('ord'),t('date'),t('amount'),t('payment'),t('status')].map(h=>`<th style="color:${c.dim};font-size:10px;font-weight:600;text-align:left;padding:10px 14px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead><tbody>${state.orders.map(o=>`<tr style="border-bottom:1px solid ${c.border}"><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${o.id}</td><td style="padding:12px 14px;color:${c.muted};font-size:12px">${o.time}</td><td style="padding:12px 14px;color:${c.text};font-size:13px;font-weight:700">${fmt(o.total)}</td><td style="padding:12px 14px"><span style="background:${c.surf};border-radius:6px;padding:3px 8px;font-size:11px;color:${c.muted}">${o.payment}</span></td><td style="padding:12px 14px">${badge(o.status)}</td></tr>`).join('')}</tbody></table></div>`;
  
@@ -780,36 +779,263 @@ function buildModal(){
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">${btn(t('cancel'),'closeModal','secondary')} ${btn(t('createRest'),'addRestConfirm')}</div>`);
   return '';
 }
-
-// ── LANDING / CHOOSE WINDOW ────────────────────────────────────────────────
+ 
+ 
+// ── BUILDING CRM ─────────────────────────────────────────────────────────────
+// CRM data lives in state:
+// state.crmLeads = [{id, title, company, contact, phone, status, value, notes, created}]
+// statuses: 'new' | 'contact' | 'negotiation' | 'won' | 'lost'
+ 
+const CRM_STATUSES = [
+  {id:'new',     label:'Новый',        color:'#4B7BFF', bg:'rgba(75,123,255,0.12)'},
+  {id:'contact', label:'Контакт',      color:'#FFD60A', bg:'rgba(255,214,10,0.12)'},
+  {id:'negotiation',label:'Переговоры',color:'#FF6B35', bg:'rgba(255,107,53,0.12)'},
+  {id:'won',     label:'Сделка',       color:'#00E096', bg:'rgba(0,224,150,0.12)'},
+  {id:'lost',    label:'Отказ',        color:'#FF4444', bg:'rgba(255,68,68,0.12)'}
+];
+ 
+function crmStatusBadge(statusId){
+  const c = C();
+  const st = CRM_STATUSES.find(s=>s.id===statusId)||CRM_STATUSES[0];
+  return `<span style="background:${st.bg};color:${st.color};border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap">${st.label}</span>`;
+}
+ 
+function pageCRM(){
+  const c = C(); const mob = isMobile(); const pad = mob?'14px':'24px';
+  const leads = state.crmLeads || [];
+ 
+  // summary counts
+  const counts = {};
+  CRM_STATUSES.forEach(s=>{ counts[s.id]=leads.filter(l=>l.status===s.id).length; });
+  const totalValue = leads.filter(l=>l.status==='won').reduce((s,l)=>s+(l.value||0),0);
+  const pipeline   = leads.filter(l=>!['won','lost'].includes(l.status)).reduce((s,l)=>s+(l.value||0),0);
+ 
+  // Top KPI row
+  const kpis = [
+    {l:'Всего лидов',    v:leads.length,        ico:'users',   col:c.acc},
+    {l:'В работе',       v:leads.filter(l=>!['won','lost'].includes(l.status)).length, ico:'activity', col:c.blue},
+    {l:'Пайплайн',       v:fmt(pipeline),       ico:'trending',col:c.orange},
+    {l:'Выиграно',       v:fmt(totalValue),     ico:'dollar',  col:c.green}
+  ].map(k=>`<div style="background:${c.card};border:1px solid ${c.border};border-radius:12px;padding:${mob?'12px 14px':'16px 18px'}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:10px;color:${c.muted};text-transform:uppercase;letter-spacing:0.05em">${k.l}</div>
+      <div style="background:rgba(${c.accRGB},0.1);border-radius:8px;padding:6px">${icon(k.ico,14,k.col)}</div>
+    </div>
+    <div style="font-size:${mob?18:22}px;font-weight:700;color:${k.col}">${k.v}</div>
+  </div>`).join('');
+ 
+  // Status filter tabs
+  const activeFilter = state.crmFilter || 'all';
+  const filterTabs = [
+    {id:'all',label:'Все лиды',count:leads.length},
+    ...CRM_STATUSES.map(s=>({id:s.id,label:s.label,count:counts[s.id]}))
+  ].map(f=>{
+    const isActive = activeFilter===f.id;
+    const st = CRM_STATUSES.find(s=>s.id===f.id);
+    const col = isActive ? (st?st.color:c.acc) : c.muted;
+    return `<button data-action="crmFilter-${f.id}" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;border:1px solid ${isActive?`rgba(${c.accRGB},0.35)`:c.border};background:${isActive?c.accGlow:c.card};color:${col};cursor:pointer;font-family:inherit;font-size:12px;font-weight:${isActive?700:400};white-space:nowrap">
+      ${f.label}<span style="background:${isActive?`rgba(${c.accRGB},0.2)`:'rgba(112,112,160,0.1)'};border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;color:${col}">${f.count}</span>
+    </button>`;
+  }).join('');
+ 
+  // Filtered leads
+  const filtered = activeFilter==='all' ? leads : leads.filter(l=>l.status===activeFilter);
+ 
+  // Kanban mode (desktop) vs list mode (mobile)
+  let boardHTML;
+  if(!mob){
+    // Kanban columns
+    const cols = CRM_STATUSES.map(st=>{
+      const colLeads = leads.filter(l=>l.status===st.id);
+      const colVal = colLeads.reduce((s,l)=>s+(l.value||0),0);
+      const cards = colLeads.map(lead=>`
+        <div data-action="openLead-${lead.id}" style="background:${c.surf};border:1px solid ${c.border};border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border 0.15s" onmouseover="this.style.borderColor='${st.color}'" onmouseout="this.style.borderColor='${c.border}'">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="color:${c.text};font-size:13px;font-weight:600;line-height:1.3;flex:1;margin-right:6px">${lead.title}</div>
+            <div style="display:flex;gap:4px;flex-shrink:0">
+              <button data-action="moveLead-${lead.id}-prev" style="background:${c.card};border:1px solid ${c.border};border-radius:5px;padding:2px 5px;cursor:pointer;font-size:10px;color:${c.muted}" title="Назад">◀</button>
+              <button data-action="moveLead-${lead.id}-next" style="background:${c.acc};border:none;border-radius:5px;padding:2px 5px;cursor:pointer;font-size:10px;color:#fff" title="Вперёд">▶</button>
+            </div>
+          </div>
+          <div style="color:${c.muted};font-size:11px;margin-bottom:6px;display:flex;align-items:center;gap:4px">${icon('building',11,c.muted)} ${lead.company||'—'}</div>
+          <div style="color:${c.muted};font-size:11px;margin-bottom:8px;display:flex;align-items:center;gap:4px">${icon('user',11,c.muted)} ${lead.contact||'—'}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="color:${c.green};font-size:13px;font-weight:700">${lead.value?fmt(lead.value):''}</div>
+            <div style="color:${c.dim};font-size:10px">${lead.created||''}</div>
+          </div>
+        </div>`).join('') || `<div style="color:${c.dim};font-size:12px;text-align:center;padding:20px 0">Нет лидов</div>`;
+ 
+      return `<div style="flex:1;min-width:200px;max-width:260px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid ${st.color}">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${st.color}"></div>
+            <span style="color:${c.text};font-size:12px;font-weight:700">${st.label}</span>
+            <span style="background:${st.bg};color:${st.color};border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700">${colLeads.length}</span>
+          </div>
+          <span style="color:${c.muted};font-size:11px">${colVal?fmt(colVal):''}</span>
+        </div>
+        <div style="max-height:calc(100vh - 320px);overflow-y:auto;padding-right:4px">${cards}</div>
+      </div>`;
+    }).join('');
+ 
+    boardHTML = `<div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:12px">${cols}</div>`;
+  } else {
+    // Mobile: list view
+    boardHTML = filtered.length === 0
+      ? `<div style="color:${c.dim};font-size:13px;text-align:center;padding:32px">Нет лидов</div>`
+      : filtered.map(lead=>{
+          const st = CRM_STATUSES.find(s=>s.id===lead.status)||CRM_STATUSES[0];
+          return `<div data-action="openLead-${lead.id}" style="background:${c.card};border:1px solid ${c.border};border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div style="color:${c.text};font-size:14px;font-weight:700;flex:1;margin-right:8px">${lead.title}</div>
+              ${crmStatusBadge(lead.status)}
+            </div>
+            <div style="color:${c.muted};font-size:12px;margin-bottom:4px">${lead.company||'—'} · ${lead.contact||'—'}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="color:${c.green};font-size:13px;font-weight:700">${lead.value?fmt(lead.value):''}</div>
+              <div style="display:flex;gap:6px">
+                <button data-action="moveLead-${lead.id}-prev" style="background:${c.surf};border:1px solid ${c.border};border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;color:${c.muted}">◀</button>
+                <button data-action="moveLead-${lead.id}-next" style="background:${c.acc};border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;color:#fff">▶</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+  }
+ 
+  return `<div style="padding:${pad};overflow:auto;flex:1;display:flex;flex-direction:column;gap:14px">
+    <div style="display:grid;grid-template-columns:${mob?'1fr 1fr':'repeat(4,1fr)'};gap:10px">${kpis}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;overflow-x:auto;padding-bottom:2px">${filterTabs}</div>
+      <div style="display:flex;gap:8px">
+        ${btn(icon('plus',14,'#fff')+' '+t('newLead'),'openAddLead')}
+      </div>
+    </div>
+    <div style="flex:1">${boardHTML}</div>
+  </div>`;
+}
+ 
+// Lead detail / edit modal
+function buildLeadModal(){
+  const c = C();
+  if(!state.modal || state.modal.type !== 'lead') return '';
+  const lead = state.modal.lead || {};
+  const isNew = !lead.id;
+  const statusOpts = CRM_STATUSES.map(s=>({v:s.id,l:s.label}));
+  return modal(isNew ? t('newLead') : lead.title, `
+    ${inputField('Название / тема сделки','leadTitle',lead.title||'','text','Поставка стальных конструкций')}
+    ${inputField(t('company'),'leadCompany',lead.company||'','text','ООО СтройГрупп')}
+    ${inputField('Контактное лицо','leadContact',lead.contact||'','text','Иван Петров')}
+    ${inputField('Телефон','leadPhone',lead.phone||'','tel','+7 900 000-00-00')}
+    ${inputField('Сумма сделки','leadValue',lead.value||'','number','500000')}
+    ${selectField('Статус','leadStatus',lead.status||'new',statusOpts)}
+    ${inputField('Заметки','leadNotes',lead.notes||'','text','Клиент заинтересован, перезвонить в пятницу')}
+    <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:20px">
+      <div style="display:flex;gap:6px">
+        ${!isNew ? btn(icon('trash',13,c.red)+' Удалить','deleteLead','secondary','sm') : ''}
+      </div>
+      <div style="display:flex;gap:8px">
+        ${btn(t('cancel'),'closeModal','secondary')}
+        ${btn(icon('check',14,'#fff')+' '+(isNew?t('create'):t('save')),'saveLeadConfirm')}
+      </div>
+    </div>
+  `);
+}
+ 
+ 
+ 
+// ── WAYBILLS PAGE ────────────────────────────────────────────────────────────
+function pageWaybills(){
+  const c = C(); const mob = isMobile(); const pad = mob?'14px':'24px';
+  const waybills = state.waybills || [];
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="color:${c.text};font-size:20px;font-weight:700">${t('waybills')}</div>
+        <div style="color:${c.muted};font-size:13px;margin-top:2px">Накладные и документы</div>
+      </div>
+      ${btn(icon('plus',14,'#fff')+' Новая накладная','noop')}
+    </div>
+    ${waybills.length===0?`
+    <div style="background:${c.card};border:2px dashed ${c.border};border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center">
+      <div style="background:rgba(${c.accRGB},0.1);border-radius:16px;padding:20px;margin-bottom:16px">${icon('receipt',40,c.acc)}</div>
+      <div style="color:${c.text};font-size:16px;font-weight:700;margin-bottom:8px">Накладных пока нет</div>
+      <div style="color:${c.muted};font-size:13px;max-width:300px">Создайте первую накладную для отслеживания отгрузок и поступлений</div>
+      <div style="margin-top:20px">${btn(icon('plus',14,'#fff')+' Создать накладную','noop')}</div>
+    </div>`:`<div>Список накладных</div>`}
+  </div>`;
+}
+ 
+// ── INTEGRATIONS PAGE ─────────────────────────────────────────────────────────
+function pageIntegrations(){
+  const c = C(); const mob = isMobile(); const pad = mob?'14px':'24px';
+  const items = [
+    {n:'1С Бухгалтерия',d:'Синхронизация документов',ico:'dollar',s:'available'},
+    {n:'AmoCRM',d:'Импорт лидов из AmoCRM',ico:'users',s:'available'},
+    {n:'Bitrix24',d:'Двусторонняя синхронизация',ico:'building',s:'available'},
+    {n:'WhatsApp Business',d:'Уведомления клиентам',ico:'sms',s:'connected'},
+    {n:'Telegram Bot',d:'Уведомления команде',ico:'push',s:'connected'},
+    {n:'Google Sheets',d:'Экспорт данных',ico:'receipt',s:'available'},
+  ];
+  return `<div style="padding:${pad};overflow:auto;flex:1">
+    <div style="margin-bottom:20px">
+      <div style="color:${c.text};font-size:20px;font-weight:700">${t('integrations')}</div>
+      <div style="color:${c.muted};font-size:13px;margin-top:2px">Подключения и синхронизация</div>
+    </div>
+    <div style="display:grid;grid-template-columns:${mob?'1fr':'repeat(3,1fr)'};gap:12px">
+      ${items.map(i=>`<div style="background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:20px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+          <div style="background:rgba(${c.accRGB},0.1);border-radius:10px;padding:10px">${icon(i.ico,22,c.acc)}</div>
+          ${i.s==='connected'?`<span style="background:rgba(0,224,150,0.1);color:${c.green};border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700">Подключено</span>`:''}
+        </div>
+        <div style="color:${c.text};font-size:14px;font-weight:700;margin-bottom:4px">${i.n}</div>
+        <div style="color:${c.muted};font-size:12px;margin-bottom:14px">${i.d}</div>
+        ${btn(i.s==='connected'?t('change'):t('connect'),'noop',i.s==='connected'?'ghost':'primary','sm')}
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+ 
+// ── LANDING ───────────────────────────────────────────────────────────────────
 function landingScreen(){
   const c = C();
-  const langs = Object.entries(LANGS).map(([k,v])=>({k,l:v}));
+  const langs = Object.entries(LANGS).map(([k,v])=>({k,v}));
   const types = [
-    {id:'restaurant',label:t('rest')||'Restaurant'},
-    {id:'entertainment',label:'Entertainment'},
-    {id:'building',label:'Building companies'}
+    {id:'restaurant',label:'🍽️ Рестораны',desc:'Меню, заказы, склад, финансы'},
+    {id:'entertainment',label:'🎭 Развлечения',desc:'Мероприятия, бронирования'},
+    {id:'building',label:'🏗️ Строительство',desc:'CRM, накладные, лиды'}
   ];
-  const langBtns = langs.map(l=>`<button data-action="chooseLang-${l.k}" style="padding:10px 14px;border-radius:10px;border:1px solid ${state.lang===l.k?c.acc:`${c.border}`};background:${state.lang===l.k?c.accGlow:c.surf};color:${state.lang===l.k?'#fff':c.text};cursor:pointer;font-weight:600">${l.l}</button>`).join('');
-  const typeBtns = types.map(ti=>`<button data-action="chooseProgram-${ti.id}" style="padding:12px 16px;border-radius:10px;border:1px solid ${state.programType===ti.id?c.acc:`${c.border}`};background:${state.programType===ti.id?c.accGlow:c.surf};color:${state.programType===ti.id?c.text:c.text};cursor:pointer;font-weight:700">${ti.label}</button>`).join('');
-  const note = `<div style="color:${c.dim};font-size:13px;margin-top:8px">Note: Entertainment and Building companies have minimal/clear features for now.</div>`;
-  return `<div id="landing-overlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(2,2,10,0.6),rgba(2,2,10,0.85));z-index:4000">
-    <div style="width:min(940px,92vw);background:${c.card};border:1px solid ${c.border};border-radius:14px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,0.6);color:${c.text}">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px"><div style="font-size:20px;font-weight:800">Festo</div><div style="color:${c.dim};font-size:13px">Choose language and program type</div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px">
-        <div>
-          <div style="color:${c.muted};font-size:12px;margin-bottom:8px">Language</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">${langBtns}</div>
+  const langBtns = langs.map(l=>`<button data-action="chooseLang-${l.k}" style="padding:9px 14px;border-radius:9px;border:1px solid ${state.lang===l.k?c.acc:c.border};background:${state.lang===l.k?c.accGlow:c.surf};color:${state.lang===l.k?c.acc:c.text};cursor:pointer;font-size:13px;font-weight:600;font-family:inherit">${l.v}</button>`).join('');
+  const typeBtns = types.map(ti=>{
+    const active = state.programType===ti.id;
+    return `<button data-action="chooseProgram-${ti.id}" style="flex:1;min-width:160px;padding:16px;border-radius:12px;border:2px solid ${active?c.acc:c.border};background:${active?c.accGlow:c.surf};cursor:pointer;font-family:inherit;text-align:left;transition:all 0.15s">
+      <div style="font-size:18px;margin-bottom:6px">${ti.label.split(' ')[0]}</div>
+      <div style="color:${active?c.acc:c.text};font-size:13px;font-weight:700;margin-bottom:4px">${ti.label.slice(ti.label.indexOf(' ')+1)}</div>
+      <div style="color:${c.muted};font-size:11px">${ti.desc}</div>
+      ${active?`<div style="margin-top:8px;width:16px;height:16px;border-radius:50%;background:${c.acc};display:flex;align-items:center;justify-content:center">${icon('check',10,'#fff')}</div>`:''}
+    </button>`;
+  }).join('');
+  return `<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,8,16,0.95);z-index:4000;backdrop-filter:blur(8px);padding:20px">
+    <div style="width:min(780px,100%);background:${c.card};border:1px solid ${c.border};border-radius:20px;padding:32px;box-shadow:0 40px 100px rgba(0,0,0,0.7)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+        <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#7B00FF,#9B30FF);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(123,0,255,0.4)">
+          <svg width="34" height="13" viewBox="0 0 62 18"><text x="0" y="15" font-family="Inter,Arial" font-weight="800" font-size="17" fill="white" letter-spacing="2">FESTO</text></svg>
         </div>
         <div>
-          <div style="color:${c.muted};font-size:12px;margin-bottom:8px">Program type</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">${typeBtns}</div>
-          ${note}
+          <div style="color:${c.text};font-size:20px;font-weight:800">Festo Enterprise</div>
+          <div style="color:${c.muted};font-size:12px">Выберите язык и тип системы</div>
         </div>
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
-        <button data-action="skipSetup" style="background:transparent;border:1px solid ${c.border};padding:9px 14px;border-radius:10px;color:${c.muted};cursor:pointer">Skip</button>
-        <button data-action="finishSetup" style="background:linear-gradient(135deg,${c.acc},${c.acc}CC);border:none;padding:9px 14px;border-radius:10px;color:#fff;font-weight:700;cursor:pointer">Open Festo</button>
+      <div style="margin-bottom:20px">
+        <div style="color:${c.muted};font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Язык интерфейса</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">${langBtns}</div>
+      </div>
+      <div style="margin-bottom:28px">
+        <div style="color:${c.muted};font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">Тип программы</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">${typeBtns}</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px">
+        <button data-action="skipSetup" style="background:transparent;border:1px solid ${c.border};padding:10px 18px;border-radius:10px;color:${c.muted};cursor:pointer;font-family:inherit;font-size:13px">Пропустить</button>
+        <button data-action="finishSetup" style="background:linear-gradient(135deg,${c.acc},${c.acc}CC);border:none;padding:10px 20px;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit">Открыть Festo →</button>
       </div>
     </div>
   </div>`;
@@ -818,20 +1044,28 @@ function landingScreen(){
 // ── MAIN BUILD ───────────────────────────────────────────────────────────────
 function buildApp(){
   const c = C(); const mob = isMobile();
-  const landing = !state.setupComplete ? landingScreen() : '';
-  // if building mode selected, load building component script (isolated) once
-  if(state.setupComplete && state.programType==='building' && !window.buildingLoaded){
-    const s = document.createElement('script');
-    s.src = '/building/index.js';
-    s.onload = ()=>{ window.buildingLoaded = true; render(); };
-    s.onerror = ()=>{ console.warn('Failed to load building component'); };
-    document.head.appendChild(s);
+ 
+  // Page routing — building mode uses activeView for sub-pages
+  let pageContent;
+  if(!state.setupComplete){
+    pageContent = pageDashboard(); // render behind the landing overlay
+  } else if(state.page==='building'){
+    switch(state.activeView){
+      case 'crm':          pageContent = pageCRM(); break;
+      case 'orders':       pageContent = pageOrders(); break;
+      case 'waybills':     pageContent = pageWaybills(); break;
+      case 'integrations': pageContent = pageIntegrations(); break;
+      default:             pageContent = pageCRM();
+    }
+  } else {
+    const pages = {dashboard:pageDashboard,restaurants:pageRestaurants,menu:pageMenu,orders:pageOrders,inventory:pageInventory,finance:pageFinance,staff:pageStaff,analytics:pageAnalytics,settings:pageSettings};
+    pageContent = (pages[state.page]||pageDashboard)();
   }
-  const pages = {dashboard:pageDashboard,restaurants:pageRestaurants,menu:pageMenu,orders:pageOrders,inventory:pageInventory,finance:pageFinance,staff:pageStaff,analytics:pageAnalytics,settings:pageSettings};
-  // include building page when available
-  if(state.programType==='building') pages.building = ()=> window.buildingComponent ? window.buildingComponent.pageBuilding(state) : `<div style="padding:24px;color:${C().muted}">Loading building module...</div>`;
-  const pageContent = (pages[state.page]||pageDashboard)();
+ 
   const viewBar = state.viewMode!=='auto' ? `<div style="position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${c.acc},#8B5CF6);z-index:9999;box-shadow:0 0 10px rgba(${c.accRGB},0.5)"></div>` : '';
+ 
+  // Lead detail modal trumps other modals
+  const modalHTML = (state.modal && state.modal.type==='lead') ? buildLeadModal() : buildModal();
  
   return `
   <div style="display:flex;height:100vh;background:${c.bg};color:${c.text};overflow:hidden;position:relative">
@@ -842,8 +1076,8 @@ function buildApp(){
       ${pageContent}
     </div>
     ${state.notifOpen ? notifPanel() : ''}
-    ${buildModal()}
-    ${landing}
+    ${modalHTML}
+    ${!state.setupComplete ? landingScreen() : ''}
   </div>`;
 }
  
@@ -865,7 +1099,18 @@ function handleClick(e){
   const action = el.dataset.action;
  
   if(action==='noop'){}
-  else if(action.startsWith('nav-')){ setState({page:action.slice(4),sidebarOpen:false}); }
+  else if(action.startsWith('nav-')){
+    const item = action.slice(4);
+    if(state.programType==='building'){
+      if(['crm','orders','waybills','integrations'].includes(item)){
+        setState({page:'building', activeView:item, sidebarOpen:false});
+      } else {
+        setState({page:item, sidebarOpen:false});
+      }
+    } else {
+      setState({page:item, sidebarOpen:false});
+    }
+  }
   else if(action==='openSidebar'){ setState({sidebarOpen:true}); }
   else if(action==='closeSidebar'){ setState({sidebarOpen:false}); }
   else if(action==='toggleDark'){ setState({dark:!state.dark}); }
@@ -877,6 +1122,57 @@ function handleClick(e){
   else if(action==='openAddDish'){ setState({modal:'addDish'}); }
   else if(action==='openAddIngr'){ setState({modal:'addIngr'}); }
   else if(action==='openAddStaff'){ setState({modal:'addStaff'}); }
+  else if(action==='openAddLead'){ setState({modal:{type:'lead',lead:{}}}); }
+  else if(action.startsWith('openLead-')){
+    const id = parseInt(action.slice(9));
+    const lead = (state.crmLeads||[]).find(l=>l.id===id);
+    if(lead) setState({modal:{type:'lead',lead:{...lead}}});
+  }
+  else if(action.startsWith('crmFilter-')){ setState({crmFilter:action.slice(10)}); }
+  else if(action.startsWith('moveLead-')){
+    // moveLead-{id}-next or moveLead-{id}-prev
+    const parts = action.split('-');
+    const leadId = parseInt(parts[1]);
+    const dir = parts[2]; // 'next' or 'prev'
+    const statOrder = ['new','contact','negotiation','won','lost'];
+    setState(s=>{
+      const leads = s.crmLeads.map(l=>{
+        if(l.id!==leadId) return l;
+        const curIdx = statOrder.indexOf(l.status);
+        const newIdx = dir==='next' ? Math.min(curIdx+1,statOrder.length-1) : Math.max(curIdx-1,0);
+        return {...l, status:statOrder[newIdx]};
+      });
+      return {crmLeads:leads};
+    });
+  }
+  else if(action==='saveLeadConfirm'){
+    const title  = document.getElementById('leadTitle')?.value||'';
+    const company= document.getElementById('leadCompany')?.value||'';
+    const contact= document.getElementById('leadContact')?.value||'';
+    const phone  = document.getElementById('leadPhone')?.value||'';
+    const value  = parseFloat(document.getElementById('leadValue')?.value)||0;
+    const status = document.getElementById('leadStatus')?.value||'new';
+    const notes  = document.getElementById('leadNotes')?.value||'';
+    if(!title){ alert('Введите название сделки'); return document.addEventListener('click',handleClick,{once:true}); }
+    const existingId = state.modal?.lead?.id;
+    if(existingId){
+      setState(s=>({crmLeads:s.crmLeads.map(l=>l.id===existingId?{...l,title,company,contact,phone,value,status,notes}:l),modal:null}));
+    } else {
+      const newLead = {id:Date.now(),title,company,contact,phone,value,status,notes,created:new Date().toLocaleDateString('ru-RU')};
+      setState(s=>({crmLeads:[newLead,...(s.crmLeads||[])],modal:null}));
+    }
+  }
+  else if(action==='deleteLead'){
+    const id = state.modal?.lead?.id;
+    if(id) setState(s=>({crmLeads:s.crmLeads.filter(l=>l.id!==id),modal:null}));
+  }
+  else if(action.startsWith('chooseLang-')){ setState({lang:action.slice(11)}); }
+  else if(action.startsWith('chooseProgram-')){
+    const p = action.slice(14);
+    setState({programType:p, page:p==='building'?'building':'dashboard', activeView:p==='building'?'crm':state.activeView});
+  }
+  else if(action==='finishSetup'){ setState({setupComplete:true, programType:state.programType||'restaurant'}); }
+  else if(action==='skipSetup'){  setState({setupComplete:true, programType:'restaurant'}); }
   else if(action==='openAddRest'){ setState({modal:'addRest'}); }
   else if(action==='closeModal'){ setState({modal:null}); }
   else if(action.startsWith('menuFilter-')){ setState({menuFilter:action.slice(11)}); }
@@ -917,30 +1213,6 @@ function handleClick(e){
     const name = document.getElementById('newRestName')?.value;
     const cuisine = document.getElementById('newRestCuisine')?.value||'';
     if(name){ setState(s=>({...s,restaurants:[...s.restaurants,{id:Date.now(),name,cuisine,orders:0,revenue:0,status:'active'}],modal:null})); }
-  }
-  else if(action.startsWith('chooseLang-')){
-    const lang = action.slice(11);
-    setState({lang});
-  }
-  else if(action.startsWith('chooseProgram-')){
-    const p = action.slice(14);
-    setState({programType:p});
-  }
-  else if(action==='finishSetup'){
-    // ensure default program
-    if(!state.programType) setState({programType:'restaurant',setupComplete:true});
-    else setState({setupComplete:true});
-  }
-  else if(action==='skipSetup'){
-    setState({setupComplete:true});
-  }
-  else if(action.startsWith('orderConfirm-')){
-    const id = action.slice(13);
-    setState(s=>{
-      const orders = s.orders.map(o=>o.id==id?{...o,status:'confirmed'}:o);
-      try{ localStorage.setItem('festo_orders', JSON.stringify(orders)); }catch(e){console.warn(e)}
-      return {orders};
-    });
   }
  
   document.addEventListener('click',handleClick,{once:true});
